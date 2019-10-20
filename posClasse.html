@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Position classe</title>
+	<meta charset="utf-8">
+	<style type="text/css">
+	table {
+		border-collapse: collapse;
+	}
+
+	td, tr {
+		border: 1px solid black;
+		width: 100px;
+		text-align: center;
+	}
+
+	footer {
+		position: absolute;
+		bottom: 0;
+	}
+</style>
+</head>
+<body onload="chargementPage()">
+	<center><u>Position classe (2.0)</u></center>
+	<br>
+	<input id="login" placeholder="Login" />
+	<br><input id="password" type="password" placeholder="Mot de passe" />
+	<br><input id="button" type="button" value="Connexion" onclick="auth()" />
+	<br>
+	<script>
+		/*
+		var i1 = document.createElement("input");
+		i1.type = "radio"
+		document.body.appendChild(i1)
+		var p = document.createElement("no");
+		p.innerText = "1er semestre"
+		document.body.appendChild(p)
+		*/
+		var login;
+		var password;
+		var cookie = false;
+		var tr;
+		var trUser;
+
+		// Si identifiants dans le localStorage, connexion automatique
+		if (localStorage.getItem("EcDI") != null && localStorage.EcDI.indexOf("||") != -1) {
+			login = localStorage.getItem("EcDI").split("||")[0];
+			password = localStorage.getItem("EcDI").split("||")[1];
+			cookie=true;
+			console.log(password);
+
+			// On se connecte
+			auth();
+		}
+
+		function auth() {
+			// On retire le tableau si besoin est
+			if (document.getElementsByTagName("p")[0] != undefined) {
+				document.getElementsByTagName("p")[0].remove();
+			}
+			if (document.getElementsByTagName("table")[0] != undefined) {
+				document.getElementsByTagName("table")[0].remove();
+			}
+			
+			// Pour empêcher les singes de spammer le bouton
+			document.getElementById("button").disabled = true;
+
+			// Récupération des identifiants
+			if (typeof login == "undefined" && typeof password == "undefined") {
+				login = document.getElementById("login").value;
+  				password = document.getElementById("password").value;
+			}
+
+			// Création de la variable pour le trimestre demandé par l'utilisateur
+  			if (document.getElementById("tr0")) {
+  				for (i=0; i < document.getElementsByTagName("no").length; i++) {
+  					if (document.getElementById("tr"+i).checked) {
+  						trUser=i;
+  						console.log("trUser",trUser)
+  					}
+  				}
+  			}
+
+  			else {
+  				trUser = -1;
+  			}
+
+  			// On retire les cases à cocher
+			if (document.getElementsByTagName("no")[0] != undefined) {
+				u=0
+				while (u < 3) {
+					document.getElementsByTagName("no")[0].remove();
+					document.getElementsByName("Trimestre")[0].remove();
+					document.getElementsByTagName("br")[3].remove();
+					u++;
+				}
+			}
+
+  			// Données JSON à envoyer
+  			data={
+    			"identifiant": login,
+    			"motdepasse": password
+			}
+
+			// Création + envoi de la requête
+			var http = new XMLHttpRequest();
+  			http.open("POST", "https://vmws11.ecoledirecte.com/v3/login.awp", true);
+  			http.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+  		  	http.send("data="+JSON.stringify(data));
+
+  		  	// Récupération des données de la requête du login
+  			http.onreadystatechange = function() {
+    			if (http.readyState == 4 && http.status == 200) {
+       				var reponse = JSON.parse(http.responseText);
+       				var token = reponse.token;
+       				var message = reponse.message;
+       				if (document.getElementsByTagName("test")[0] == null) {
+       					var msgAfficher = document.createElement("test");
+       					document.getElementsByTagName("body")[0].appendChild(msgAfficher);
+       				}
+    
+       				
+       				// Si pas d'erreur lancement de la 2e requête
+       				console.log(message);
+					document.getElementById("button").disabled = false;
+       				if (message == "") {
+       					var idEleve = reponse.data.accounts[0].id;
+       					recupererNote(token, idEleve);
+       					enregistrer(login, password);
+       					log(login);
+       					document.getElementsByTagName("test")[0].innerText = "Chargement...";
+       				}
+
+       				// Si erreur affichage du message d'erreur
+       				else {
+       					document.getElementsByTagName("test")[0].innerText = message;
+       				}
+   				}
+			}
+		}
+
+		function recupererNote(token, idEleve) {
+			// Envoi du token pour la 2e requête
+			data={
+    			"token": token
+			}
+
+			// 2e requête
+			var http = new XMLHttpRequest();
+			http.open("POST","https://vmws10.ecoledirecte.com/v3/eleves/"+idEleve+"/notes.awp?verbe=get&", true);
+  			http.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+  			http.send("data="+JSON.stringify(data));
+
+  			http.onreadystatechange = function() {
+ 		  		if (http.readyState == 4 && http.status == 200) {
+ 		  			document.getElementsByTagName("test")[0].remove();
+       				var reponse = JSON.parse(http.responseText);
+       				if (trUser == -1) {
+						tr = defautTriOuSem(reponse.data.periodes);
+       				}
+       				else if (trUser != -1) {
+       					tr = trUser;
+       				}
+       				console.log("tr",tr)
+       				var matieres = reponse.data.periodes[tr].ensembleMatieres.disciplines;
+       				var effectif = reponse.data.periodes[0].ensembleMatieres.disciplines[0].effectif;
+       				afficherPeriodes(reponse)
+       				afficherMatiere(matieres, effectif, reponse, tr);
+   				}
+			}
+		}
+
+		function defautTriOuSem(tr) {
+			var date = new Date();
+			var date2;
+			for (i=0; i < tr.length; i++) {
+				date2 = new Date(tr[i].dateFin.split("-")[0], tr[i].dateFin.split("-")[1]-1, tr[i].dateFin.split("-")[2]);
+				console.log(date2);
+				if (date < date2) {
+					return i;
+				}
+			}
+		}
+
+		//(year, month, day, hour, minute, second, and millisecond
+
+		function afficherPeriodes(reponse) {
+			var NbTr = reponse.data.periodes.length;
+
+			// Pour les semestres
+			if (NbTr == 3) {
+				var coche = document.createElement("input");
+				coche.type = "radio";
+				coche.id = "tr"+(NbTr-1);
+				coche.name = "Trimestre";
+				document.body.appendChild(coche);
+
+				var p = document.createElement("no");
+				p.innerText = "Depuis le début de l'année";
+				document.body.appendChild(p);
+
+				var retourLigne = document.createElement("br");
+				document.body.appendChild(retourLigne);
+
+				for (i=1; i < NbTr; i++) {
+					var coche = document.createElement("input");
+					coche.type = "radio";
+					coche.id = "tr"+(i-1);
+					coche.name = "Trimestre"
+
+					document.body.appendChild(coche);
+
+					var p = document.createElement("no");
+					p.innerText = (i)+"e semestre";
+					document.body.appendChild(p);
+
+					var retourLigne = document.createElement("br");
+					document.body.appendChild(retourLigne);
+				}
+			}
+
+			// Pour les trimestres
+			if (NbTr == 4) {
+				var coche = document.createElement("input");
+				coche.type = "radio";
+				coche.id = "tr"+(NbTr-1);
+				coche.name = "Trimestre"
+				document.body.appendChild(coche);
+
+				var p = document.createElement("no");
+				p.innerText = "Depuis le début de l'année";
+				document.body.appendChild(p);
+
+				var retourLigne = document.createElement("br");
+				document.body.appendChild(retourLigne);
+
+				for (i=1; i < NbTr; i++) {			
+					var coche = document.createElement("input");
+					coche.type = "radio";
+					coche.id = "tr"+(i-1);
+					coche.name = "Trimestre"
+					document.body.appendChild(coche);
+
+					var p = document.createElement("no");
+					p.innerText = (i)+"e trimestre";
+					document.body.appendChild(p);
+
+					var retourLigne = document.createElement("br");
+					document.body.appendChild(retourLigne);
+				}
+			}
+
+			// Cochage de la case adéquate
+       		document.getElementById("tr"+tr).checked = true;
+			
+			console.log("Periodes affichées!")
+		}
+
+		function afficherMatiere(matieres, effectif, reponse, tr) {
+			// Création des tableaux
+			rang = [];
+			discipline = [];
+
+			// Remplissage du tableau
+			for (i=0; i < matieres.length; i++) {
+				discipline.push(matieres[i].discipline);
+				rang.push(matieres[i].rang);
+			}
+
+			console.log(rang);
+			console.log(discipline);
+
+			// Création du tableau "physique"
+			var table = document.createElement("table");
+			table.id = "table";
+
+			var colonne = document.createElement("tr");
+			colonne.id = "column";
+
+			var disciplineTable = document.createElement("th");
+			disciplineTable.id="disciplineTable";
+			disciplineTable.innerText="Matières";
+
+			var rangTable = document.createElement("th");
+			rangTable.id="rangTable";
+			rangTable.innerText="Position";
+
+			var effectifTable = document.createElement("th");
+			effectifTable.id="effectifTable";
+			effectifTable.innerText="Effectif";
+
+			document.getElementsByTagName("body")[0].appendChild(table);
+			var table = document.getElementById("table");
+			table.appendChild(colonne);
+			var column = document.getElementById("column");
+			column.appendChild(disciplineTable);
+			column.appendChild(rangTable);
+			column.appendChild(effectifTable);
+
+			// Remplissage du tableau "physique"
+			for (i=0; i < matieres.length; i++) {
+				var newTable = document.createElement("tr");
+				document.getElementById("table").appendChild(newTable);
+
+				// Disciplines
+				var newTableD = document.createElement("td");
+				newTableD.innerText = matieres[i].discipline
+				document.getElementsByTagName("tr")[i+1].appendChild(newTableD);
+				
+				// Rang
+				var newTableR = document.createElement("td");
+				newTableR.innerText = matieres[i].rang;
+
+				// Couleur en fonction du classement
+				if (matieres[i].rang == 0) {
+					newTableR.style="";
+				}
+
+				else if (matieres[i].rang <= Math.round(effectif*1/3)) {
+					newTableR.style="background-color: green;";
+				}
+
+				else if (matieres[i].rang <= Math.round(effectif*2/3)) {
+					newTableR.style="background-color: yellow;";
+				}
+
+				else if (matieres[i].rang <= Math.round(effectif*3/3)) {
+					newTableR.style="background-color: red;";
+				}
+
+				document.getElementsByTagName("tr")[i+1].appendChild(newTableR);
+
+				var newTableE = document.createElement("td");
+				newTableE.innerText = effectif;
+				document.getElementsByTagName("tr")[i+1].appendChild(newTableE);
+			}
+			
+			// Message mise à jour notes
+			var maj = document.createElement("p");
+			maj.style = "font-style: italic;";
+
+			var notes = [];
+			
+			for (k=0;k < reponse.data.notes.length;k++) {
+				notes.push(parseInt(reponse.data.notes[k].dateSaisie.split("-")[0])+parseInt(reponse.data.notes[k].dateSaisie.split("-")[1])+parseInt(reponse.data.notes[k].dateSaisie.split("-")[2]));
+			}
+			console.log(notes.indexOf(Math.min(...notes)))
+			maj.innerText = "Dernière mise a jour des notes le : "+reponse.data.notes[notes.indexOf(Math.max(...notes))].dateSaisie+".\nDernier calcul du classement le : "+reponse.data.periodes[reponse.data.periodes.length-1].ensembleMatieres.dateCalcul+".";
+			
+			maj.style = "font-style: italic;";
+			document.getElementsByTagName("body")[0].appendChild(maj);
+		}
+
+
+
+		// Pour enlever la pub de l'hébergeur
+		function chargementPage() {
+			if (document.getElementsByTagName("div")[0] != undefined) {
+				document.getElementsByTagName("div")[0].remove();
+			}
+		}
+
+		function enregistrer(login, password) {
+			if (cookie == false) {
+				localStorage.setItem("EcDI", login+"||"+password);
+			}
+		}
+
+		function log(login) {
+				var date = new Date();
+				var http = new XMLHttpRequest();
+
+				http.open("POST","https://samsamdu44.000webhostapp.com/script/database.php", true);
+  				http.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+  				http.send("data="+"["+date.getDate()+"/"+parseInt(date.getMonth()+1)+"/"+date.getFullYear()+" "+date.getHours()+":"+date.getMinutes()+":"+date.getSeconds()+"] "+login);
+		}
+	</script>
+</body>
+</html>
