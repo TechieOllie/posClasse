@@ -20,8 +20,8 @@
 	}
 </style>
 </head>
-<body onload="chargementPage()">
-	<center><u>Position classe (2.0)</u></center>
+<body>
+	<center><u>Position classe (2.1)</u></center>
 	<br>
 	<input id="login" placeholder="Login" />
 	<br><input id="password" type="password" placeholder="Mot de passe" />
@@ -53,10 +53,15 @@
 			if (document.getElementsByTagName("table")[0] != undefined) {
 				document.getElementsByTagName("table")[0].remove();
 			}
+			if (document.getElementById("deco") != undefined) {
+				document.getElementById("deco").remove();
+			}
 			
-			// Pour empêcher les singes de spammer le bouton
+			// Pour empêcher les singes de spammer le bouton ou les champs
 			document.getElementById("button").disabled = true;
-
+			document.getElementById("login").disabled = true;
+			document.getElementById("password").disabled = true;
+			
 			// Récupération des identifiants
 			if (typeof login == "undefined" && typeof password == "undefined") {
 				login = document.getElementById("login").value;
@@ -68,7 +73,7 @@
   				for (i=0; i < document.getElementsByTagName("no").length; i++) {
   					if (document.getElementById("tr"+i).checked) {
   						trUser=i;
-  						console.log("trUser",trUser)
+  						console.log("trUser", trUser)
   					}
   				}
   			}
@@ -79,7 +84,7 @@
 
   			// On retire les cases à cocher
 			if (document.getElementsByTagName("no")[0] != undefined) {
-				u=0
+				u=0;
 				while (u < 3) {
 					document.getElementsByTagName("no")[0].remove();
 					document.getElementsByName("Trimestre")[0].remove();
@@ -119,7 +124,7 @@
        					var idEleve = reponse.data.accounts[0].id;
        					recupererNote(token, idEleve);
        					enregistrer(login, password);
-       					log(login);
+       					//log(login);
        					document.getElementsByTagName("test")[0].innerText = "Chargement...";
        				}
 
@@ -153,7 +158,7 @@
        				else if (trUser != -1) {
        					tr = trUser;
        				}
-       				console.log("tr",tr)
+       				console.log("tr", tr);
        				var matieres = reponse.data.periodes[tr].ensembleMatieres.disciplines;
        				var effectif = reponse.data.periodes[0].ensembleMatieres.disciplines[0].effectif;
        				afficherPeriodes(reponse)
@@ -162,6 +167,7 @@
 			}
 		}
 
+		// Pour determiner le semestre/actuel actuel
 		function defautTriOuSem(tr) {
 			var date = new Date();
 			var date2;
@@ -174,8 +180,7 @@
 			}
 		}
 
-		//(year, month, day, hour, minute, second, and millisecond
-
+		// Affiche les périodes
 		function afficherPeriodes(reponse) {
 			var NbTr = reponse.data.periodes.length;
 
@@ -248,11 +253,15 @@
 			console.log("Periodes affichées!")
 		}
 
+		// Affichage des matières
 		function afficherMatiere(matieres, effectif, reponse, tr) {
 			// Création des tableaux
 			rang = [];
 			discipline = [];
 
+			// Variable pour fin tri/semestre
+			let finEcheance = new Date(reponse.data.periodes[tr].dateFin);
+			let debEchance = new Date(reponse.data.periodes[tr].dateDebut);
 			// Remplissage du tableau
 			for (i=0; i < matieres.length; i++) {
 				discipline.push(matieres[i].discipline);
@@ -261,6 +270,24 @@
 
 			console.log(rang);
 			console.log(discipline);
+
+			// Classement des moyennes
+			var listeDevoirs = reponse.data.notes;
+			var tableauDevoirs = {}; // Contient par matière les notes, surX et le coeff pour chaque valeur
+			
+			for (x of listeDevoirs) {
+				if (new Date(x.date) < finEcheance && new Date(x.date) >  debEchance) {
+					if (tableauDevoirs[x.libelleMatiere] == undefined) {
+						tableauDevoirs[x.libelleMatiere] = [];
+						tableauDevoirs[x.libelleMatiere].push([parseFloat(x.valeur.replace(",", ".")), parseFloat(x.noteSur.replace(",", ".")), parseFloat(x.coef.replace(",", "."))]);
+					}
+					else {
+						tableauDevoirs[x.libelleMatiere].push([parseFloat(x.valeur.replace(",", ".")), parseFloat(x.noteSur.replace(",", ".")), parseFloat(x.coef.replace(",", "."))]);
+					}
+				}
+			}
+			
+			console.log(tableauDevoirs);
 
 			// Création du tableau "physique"
 			var table = document.createElement("table");
@@ -277,20 +304,24 @@
 			rangTable.id="rangTable";
 			rangTable.innerText="Position";
 
-			var effectifTable = document.createElement("th");
-			effectifTable.id="effectifTable";
-			effectifTable.innerText="Effectif";
+			var moyenneNoteTable = document.createElement("th");
+			moyenneNoteTable.id="moyenneNoteTable";
+			moyenneNoteTable.innerText="Notes";
 
 			document.getElementsByTagName("body")[0].appendChild(table);
-			var table = document.getElementById("table");
 			table.appendChild(colonne);
+			
 			var column = document.getElementById("column");
 			column.appendChild(disciplineTable);
 			column.appendChild(rangTable);
-			column.appendChild(effectifTable);
+			column.appendChild(moyenneNoteTable);
 
 			// Remplissage du tableau "physique"
-			for (i=0; i < matieres.length; i++) {
+			var moyenneGen = 0;
+			var rangGen = 0;
+			var sommeCoeffMatiere = 0;
+
+			for (i=0; i < matieres.length; i++) {				
 				var newTable = document.createElement("tr");
 				document.getElementById("table").appendChild(newTable);
 
@@ -301,9 +332,9 @@
 				
 				// Rang
 				var newTableR = document.createElement("td");
-				newTableR.innerText = matieres[i].rang;
+				newTableR.innerText = (matieres[i].rang).toString().replace("0", "/");
 
-				// Couleur en fonction du classement
+				// Couleur en fonction du classement (necessite la variable effectif, pas toujours présente...)
 				if (matieres[i].rang == 0) {
 					newTableR.style="";
 				}
@@ -322,10 +353,57 @@
 
 				document.getElementsByTagName("tr")[i+1].appendChild(newTableR);
 
+				// Calcul + affichage des moyennes
 				var newTableE = document.createElement("td");
-				newTableE.innerText = effectif;
+				var moyenneNotes = 0;
+				var sommeCoeff = 0;
+				var sommeNotes = 0;
+
+				if (tableauDevoirs[matieres[i].discipline] != undefined) {
+					for (chaqueNote of tableauDevoirs[matieres[i].discipline]) {
+						sommeNotes+=(chaqueNote[0]/chaqueNote[1])*chaqueNote[2];
+						sommeCoeff+=chaqueNote[2];
+					}
+					moyenneNotes=Math.round(sommeNotes/sommeCoeff*2000)/100;
+					moyenneGen+=moyenneNotes*parseFloat(matieres[i].coef);
+					rangGen+=parseFloat(matieres[i].rang)*parseFloat(matieres[i].coef);
+					sommeCoeffMatiere+=parseFloat(matieres[i].coef);
+				}
+
+				else {
+					moyenneNotes = "/"; // Sinon, affiche un slash
+				}
+
+				newTableE.innerText = moyenneNotes;
 				document.getElementsByTagName("tr")[i+1].appendChild(newTableE);
 			}
+
+			// Affichage pour rang moyen, notes moyennes
+			var newTable = document.createElement("tr");
+			document.getElementById("table").appendChild(newTable);
+
+			var newTableD = document.createElement("td");
+			newTableD.style = "font-weight: bold";
+			newTableD.innerText = "Moyennes";
+			document.getElementsByTagName("tr")[i+1].appendChild(newTableD);
+
+			var newTableR = document.createElement("td");
+			if (rangGen != 0 && sommeCoeffMatiere != 0)
+				newTableR.innerText = Math.round(rangGen/sommeCoeffMatiere);
+			else 
+				newTableR.innerText ="/";
+			newTableR.style = "font-weight: bold";
+			document.getElementsByTagName("tr")[i+1].appendChild(newTableR);
+
+			var newTableE = document.createElement("td");
+			if (moyenneGen != 0 && sommeCoeffMatiere != 0)
+				newTableE.innerText = Math.round(moyenneGen/sommeCoeffMatiere*100)/100;
+			else
+				newTableE.innerText = "/";
+
+
+			newTableE.style = "font-weight: bold";
+			document.getElementsByTagName("tr")[i+1].appendChild(newTableE);
 			
 			// Message mise à jour notes
 			var maj = document.createElement("p");
@@ -341,23 +419,30 @@
 			
 			maj.style = "font-style: italic;";
 			document.getElementsByTagName("body")[0].appendChild(maj);
-		}
 
-
-
-		// Pour enlever la pub de l'hébergeur
-		function chargementPage() {
-			if (document.getElementsByTagName("div")[0] != undefined) {
-				document.getElementsByTagName("div")[0].remove();
+			function disconnect() {
+				if(confirm("Etes-vous sur(e) de vouloir vous déconnecter ?")){
+					localStorage.clear();
+					document.location.reload();
+				}
 			}
+			
+			var deco = document.createElement("input");
+			deco.id = "deco";
+			deco.type = "button";
+			deco.value = "Se déconnecter";
+			deco.addEventListener("click", disconnect);
+			document.getElementsByTagName("body")[0].appendChild(deco);
+
 		}
+
 
 		function enregistrer(login, password) {
 			if (cookie == false) {
 				localStorage.setItem("EcDI", login+"||"+password);
 			}
 		}
-
+/*
 		function log(login) {
 				var date = new Date();
 				var http = new XMLHttpRequest();
@@ -365,7 +450,7 @@
 				http.open("POST","https://samsamdu44.000webhostapp.com/script/database.php", true);
   				http.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
   				http.send("data="+"["+date.getDate()+"/"+parseInt(date.getMonth()+1)+"/"+date.getFullYear()+" "+date.getHours()+":"+date.getMinutes()+":"+date.getSeconds()+"] "+login);
-		}
+		}*/
 	</script>
 </body>
 </html>

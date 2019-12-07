@@ -1,0 +1,10 @@
+posClasse 2.1
+-Suppression des commentaires inutiles
+-Affichage des moyennes
+-Affichage du rang moyen + moyennes générale
+-Supression du snippet pour enlever la pub de l'hebergeur
+-Grisage des champs login/password
+
+posClasse 2.0
+-Système de semestre/trimestre
+-Date par défaut
