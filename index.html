@@ -434,6 +434,9 @@
 				localStorage.clear();
 				cookie=false;
 
+				document.getElementById("login").value = "";
+				document.getElementById("password").value = "";
+
 				document.getElementsByTagName("p")[0].remove();
 				document.getElementsByTagName("table")[0].remove();
 				document.getElementById("deco").remove();
