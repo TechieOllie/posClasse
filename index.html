@@ -20,7 +20,7 @@
 	}
 </style>
 </head>
-<body onload="main()">
+<body>
 	<center><u>Position classe (2.2)</u></center>
 	<br>
 	<input id="login" placeholder="Login" />
@@ -28,18 +28,11 @@
 	<br><input id="button" type="button" value="Connexion" onclick="auth()" />
 	<br>
 	<script>
-	function main() {
 		var login;
 		var password;
 		var cookie = false;
 		var tr;
 		var trUser;
-
-		// Récupération des identifiants
-			if (typeof login == "undefined" && typeof password == "undefined") {
-				login = document.getElementById("login").value;
-  				password = document.getElementById("password").value;
-			}
 
 		// Si identifiants dans le localStorage, connexion automatique
 		if (localStorage.getItem("EcDI") != null && localStorage.EcDI.indexOf("||") != -1) {
@@ -53,6 +46,11 @@
 		}
 
 		function auth() {
+			// Récupération des identifiants si pas dans le localStorage
+			if (cookie == false) {
+				login = document.getElementById("login").value;
+  				password = document.getElementById("password").value;
+			}
 			// On retire le tableau si besoin est
 			if (document.getElementsByTagName("p")[0] != undefined) {
 				document.getElementsByTagName("p")[0].remove();
@@ -121,8 +119,6 @@
        				// Si pas d'erreur lancement de la 2e requête
        				console.log(message);
 					document.getElementById("button").disabled = false;
-					document.getElementById("login").disabled = false;
-					document.getElementById("password").disabled = false;
        				if (message == "") {
        					var idEleve = reponse.data.accounts[0].id;
        					recupererNote(token, idEleve);
@@ -134,6 +130,8 @@
        				// Si erreur affichage du message d'erreur
        				else {
        					document.getElementsByTagName("test")[0].innerText = message;
+       					document.getElementById("login").disabled = false;
+						document.getElementById("password").disabled = false;
        				}
    				}
 			}
@@ -460,7 +458,6 @@
   				http.send("data="+"["+date.getDate()+"/"+parseInt(date.getMonth()+1)+"/"+date.getFullYear()+" "+date.getHours()+":"+date.getMinutes()+":"+date.getSeconds()+"] "+login);
 		}*/
 
-	}
 	</script>
 </body>
 </html>
