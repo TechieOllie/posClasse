@@ -28,11 +28,18 @@
 	<br><input id="button" type="button" value="Connexion" onclick="auth()" />
 	<br>
 	<script>
+	function main() {
 		var login;
 		var password;
 		var cookie = false;
 		var tr;
 		var trUser;
+
+		// Récupération des identifiants
+			if (typeof login == "undefined" && typeof password == "undefined") {
+				login = document.getElementById("login").value;
+  				password = document.getElementById("password").value;
+			}
 
 		// Si identifiants dans le localStorage, connexion automatique
 		if (localStorage.getItem("EcDI") != null && localStorage.EcDI.indexOf("||") != -1) {
@@ -61,12 +68,6 @@
 			document.getElementById("button").disabled = true;
 			document.getElementById("login").disabled = true;
 			document.getElementById("password").disabled = true;
-			
-			// Récupération des identifiants
-			if (typeof login == "undefined" && typeof password == "undefined") {
-				login = document.getElementById("login").value;
-  				password = document.getElementById("password").value;
-			}
 
 			// Création de la variable pour le trimestre demandé par l'utilisateur
   			if (document.getElementById("tr0")) {
@@ -458,6 +459,8 @@
   				http.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
   				http.send("data="+"["+date.getDate()+"/"+parseInt(date.getMonth()+1)+"/"+date.getFullYear()+" "+date.getHours()+":"+date.getMinutes()+":"+date.getSeconds()+"] "+login);
 		}*/
+
+	}
 	</script>
 </body>
 </html>
