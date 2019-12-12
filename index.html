@@ -120,6 +120,8 @@
        				// Si pas d'erreur lancement de la 2e requête
        				console.log(message);
 					document.getElementById("button").disabled = false;
+					document.getElementById("login").disabled = false;
+					document.getElementById("password").disabled = false;
        				if (message == "") {
        					var idEleve = reponse.data.accounts[0].id;
        					recupererNote(token, idEleve);
