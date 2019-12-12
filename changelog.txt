@@ -1,3 +1,11 @@
+posClasse 2.2
+-Prise en compte des absences dans le calcul des moyennes
+-Correction d'un bug d'affichage
+-Correction d'un bug de connexion
+-Correction d'un bug pour la date de màj des notes
+-Bouton pour se déconnecter (vide le localStorage)
+
+
 posClasse 2.1
 -Suppression des commentaires inutiles
 -Affichage des moyennes
