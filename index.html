@@ -428,10 +428,8 @@
 			document.getElementsByTagName("body")[0].appendChild(maj);
 
 			function disconnect() {
-				if(confirm("Etes-vous sur(e) de vouloir vous déconnecter ?")){
-					localStorage.clear();
-					document.location.reload(true);
-				}
+				localStorage.clear();
+				document.location.reload(true);
 			}
 			
 			var deco = document.createElement("input");
