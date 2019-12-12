@@ -20,8 +20,8 @@
 	}
 </style>
 </head>
-<body>
-	<center><u>Position classe (2.1)</u></center>
+<body onload="main()">
+	<center><u>Position classe (2.1.1)</u></center>
 	<br>
 	<input id="login" placeholder="Login" />
 	<br><input id="password" type="password" placeholder="Mot de passe" />
@@ -279,10 +279,14 @@
 				if (new Date(x.date) < finEcheance && new Date(x.date) >  debEchance) {
 					if (tableauDevoirs[x.libelleMatiere] == undefined) {
 						tableauDevoirs[x.libelleMatiere] = [];
-						tableauDevoirs[x.libelleMatiere].push([parseFloat(x.valeur.replace(",", ".")), parseFloat(x.noteSur.replace(",", ".")), parseFloat(x.coef.replace(",", "."))]);
+						if (!isNaN(parseFloat(x.valeur))) { // Verif si absent
+							tableauDevoirs[x.libelleMatiere].push([parseFloat(x.valeur.replace(",", ".")), parseFloat(x.noteSur.replace(",", ".")), parseFloat(x.coef.replace(",", "."))]);
+						}
 					}
 					else {
+						if (!isNaN(parseFloat(x.valeur))) { // Pareil
 						tableauDevoirs[x.libelleMatiere].push([parseFloat(x.valeur.replace(",", ".")), parseFloat(x.noteSur.replace(",", ".")), parseFloat(x.coef.replace(",", "."))]);
+						}
 					}
 				}
 			}
@@ -332,7 +336,10 @@
 				
 				// Rang
 				var newTableR = document.createElement("td");
-				newTableR.innerText = (matieres[i].rang).toString().replace("0", "/");
+				newTableR.innerText = "/";
+				if (matieres[i].rang != "0") { // Si pas de rang, on met un slash
+					newTableR.innerText = matieres[i].rang;
+				}
 
 				// Couleur en fonction du classement (necessite la variable effectif, pas toujours présente...)
 				if (matieres[i].rang == 0) {
@@ -421,10 +428,10 @@
 			document.getElementsByTagName("body")[0].appendChild(maj);
 
 			function disconnect() {
-				//if(confirm("Etes-vous sur(e) de vouloir vous déconnecter ?")){
+				if(confirm("Etes-vous sur(e) de vouloir vous déconnecter ?")){
 					localStorage.clear();
-					document.location.reload();
-				//}
+					document.location.reload(true);
+				}
 			}
 			
 			var deco = document.createElement("input");
