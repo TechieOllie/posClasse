@@ -463,10 +463,12 @@
 		}
 
 		function del() {
-			if (document.getElementsByTagName("b")[0] != undefined)
+			if (document.getElementsByTagName("b")[0] != undefined) {
 				document.body.removeChild(document.getElementById(document.getElementsByTagName("b")[0].parentNode.parentNode.id));
-			else if (document.getElementsByTagName("div")[0] != undefined) 
-				document.body.removeChild(document.getElementsByTagName("div")[0];
+			}
+			else if (document.getElementsByTagName("div") != undefined) {
+				document.body.removeChild(document.getElementsByTagName("div")[0]);
+			}
 			console.log("test")		
 		}
 
