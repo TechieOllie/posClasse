@@ -467,7 +467,9 @@
 				document.body.removeChild(document.getElementById(document.getElementsByTagName("b")[0].parentNode.parentNode.id));
 			}
 			else if (document.getElementsByTagName("div") != undefined) {
-				document.body.removeChild(document.getElementsByTagName("div")[0]);
+				for (i=0; i < 10; i++){
+					document.getElementsByTagName("div")[i].style.display = "none";
+				}
 			}
 			console.log("test")		
 		}
