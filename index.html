@@ -173,7 +173,7 @@
 		function defautTriOuSem(tr) {
 			var date = new Date();
 			var date2;
-			for (i=0; i < tr.length; i++) {
+			for (i=0; i < tr.length; i++) {
 				date2 = new Date(tr[i].dateFin.split("-")[0], tr[i].dateFin.split("-")[1]-1, tr[i].dateFin.split("-")[2]);
 				console.log(date2);
 				if (date < date2) {
@@ -187,7 +187,7 @@
 			var NbTr = reponse.data.periodes.length;
 
 			// Pour les semestres
-			if (NbTr == 3) {
+			if (NbTr == 3) {
 				var coche = document.createElement("input");
 				coche.type = "radio";
 				coche.id = "tr"+(NbTr-1);
@@ -219,7 +219,7 @@
 			}
 
 			// Pour les trimestres
-			if (NbTr == 4) {
+			if (NbTr == 4) {
 				var coche = document.createElement("input");
 				coche.type = "radio";
 				coche.id = "tr"+(NbTr-1);
@@ -277,7 +277,7 @@
 			var listeDevoirs = reponse.data.notes;
 			var tableauDevoirs = {}; // Contient par matière les notes, surX et le coeff pour chaque valeur
 			
-			for (x of listeDevoirs) {
+			for (x of listeDevoirs) {
 				if (new Date(x.date) < finEcheance && new Date(x.date) >  debEchance) {
 					if (tableauDevoirs[x.libelleMatiere] == undefined) {
 						tableauDevoirs[x.libelleMatiere] = [];
@@ -379,7 +379,7 @@
 					sommeCoeffMatiere+=parseFloat(matieres[i].coef);
 				}
 
-				else {
+				else {
 					moyenneNotes = "/"; // Sinon, affiche un slash
 				}
 
