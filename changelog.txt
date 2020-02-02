@@ -1,3 +1,8 @@
+posClasse 2.2.2
+-Considère la fin d'un semestre comme la date du conseil
+-Division des fichiers sources
+
+
 posClasse 2.2
 -Prise en compte des absences dans le calcul des moyennes
 -Correction d'un bug d'affichage
