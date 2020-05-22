@@ -1,3 +1,7 @@
+posClasse 2.3
+-Suppression des pubs
+-Correction d'un bug d'affichage
+
 posClasse 2.2.2
 -Considère la fin d'un semestre comme la date du conseil
 -Division des fichiers sources
