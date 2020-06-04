@@ -5,7 +5,7 @@ function afficherMatiere(matieres, effectif, reponse, tr) {
     discipline = [];
 
     // Variable pour fin tri/semestre
-    let finEcheance = new Date(reponse.data.periodes[tr].dateConseil);
+    let finEcheance = new Date(reponse.data.periodes[tr].dateFin);
     let debEchance = new Date(reponse.data.periodes[tr].dateDebut);
 
     // Remplissage du tableau
@@ -22,7 +22,7 @@ function afficherMatiere(matieres, effectif, reponse, tr) {
     var tableauDevoirs = {}; // Contient par matière les notes, surX et le coeff pour chaque valeur
 
     for (x of listeDevoirs) {
-        if (new Date(x.date) < finEcheance && new Date(x.date) > debEchance) {
+        if (new Date(x.date) <= finEcheance && new Date(x.date) > debEchance && !x.nonSignificatif) { // Correpond aux echeances (si les profs remplissent au bon moment...) + significatif
             if (tableauDevoirs[x.libelleMatiere] == undefined) {
                 tableauDevoirs[x.libelleMatiere] = [];
                 if (!isNaN(parseFloat(x.valeur))) { // Verif si absent
