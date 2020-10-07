@@ -1,6 +1,7 @@
 // Affiche les périodes
 function afficherPeriodes(reponse) {
     var NbTr = reponse.data.periodes.length;
+    console.log("NbTr: "+NbTr)
 
     // Pour les semestres
     if (NbTr == 3) {

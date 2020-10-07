@@ -1,3 +1,6 @@
+7/10/20
+-Adaptation à la petit màj d'Ecole Directe
+
 posClasse 2.3
 -Suppression des pubs
 -Correction d'un bug d'affichage

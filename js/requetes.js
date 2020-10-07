@@ -51,7 +51,7 @@ function auth() {
 
     // Création + envoi de la requête
     var http = new XMLHttpRequest();
-    http.open("POST", "https://vmws11.ecoledirecte.com/v3/login.awp", true);
+    http.open("POST", "https://api.ecoledirecte.com/v3/login.awp", true);
     http.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     http.send("data=" + JSON.stringify(data));
 
@@ -97,7 +97,7 @@ function recupererNote(token, idEleve) {
 
     // 2e requête
     var http = new XMLHttpRequest();
-    http.open("POST", "https://vmws10.ecoledirecte.com/v3/eleves/" + idEleve + "/notes.awp?verbe=get&", true);
+    http.open("POST", "https://api.ecoledirecte.com/v3/eleves/" + idEleve + "/notes.awp?verbe=get&", true);
     http.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     http.send("data=" + JSON.stringify(data));
 
