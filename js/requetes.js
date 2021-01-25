@@ -107,10 +107,12 @@ function recupererNote(token, idEleve) {
             var reponse = JSON.parse(http.responseText);
             if (trUser == -1) {
                 tr = defautTriOuSem(reponse.data.periodes);
+                console.log("tr par défaut utilisé")
             } else if (trUser != -1) {
                 tr = trUser;
+                console.log("tr rentré par l'utilisateur utilisé")
             }
-            console.log("tr", tr);
+            console.log("tr pour req", tr);
             var matieres = reponse.data.periodes[tr].ensembleMatieres.disciplines;
             var effectif = reponse.data.periodes[0].ensembleMatieres.disciplines[0].effectif;
             afficherPeriodes(reponse)

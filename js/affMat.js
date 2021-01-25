@@ -5,7 +5,13 @@ function afficherMatiere(matieres, effectif, reponse, tr) {
     discipline = [];
 
     // Variable pour fin tri/semestre
-    let finEcheance = new Date(reponse.data.periodes[tr].dateFin);
+    let finEcheance;
+    if (typeof reponse.data.periodes[tr].dateConseil != "undefined") {
+        finEcheance = new Date(reponse.data.periodes[tr].dateConseil);
+    }
+    else {
+    	finEcheance = new Date(reponse.data.periodes[tr].dateFin);
+    }
     let debEchance = new Date(reponse.data.periodes[tr].dateDebut);
 
     // Remplissage du tableau
@@ -104,14 +110,32 @@ function afficherMatiere(matieres, effectif, reponse, tr) {
         var moyenneNotes = 0;
         var sommeCoeff = 0;
         var sommeNotes = 0;
+        var derniereMoyenne = -1;
 
         if (tableauDevoirs[matieres[i].discipline] != undefined) {
+            var nbNotes = tableauDevoirs[matieres[i].discipline].length;
             for (chaqueNote of tableauDevoirs[matieres[i].discipline]) {
                 sommeNotes += (chaqueNote[0] / chaqueNote[1]) * chaqueNote[2];
                 sommeCoeff += chaqueNote[2];
             }
+
             moyenneNotes = Math.round(sommeNotes / sommeCoeff * 2000) / 100;
             moyenneGen += moyenneNotes * parseFloat(matieres[i].coef);
+            
+            if (nbNotes >= 2) {
+                derniereNote = tableauDevoirs[matieres[i].discipline][nbNotes-1]
+                derniereMoyenne = Math.round((sommeNotes-derniereNote[0]/derniereNote[1]*derniereNote[2]) / (sommeCoeff-derniereNote[2]) * 2000) / 100;
+                if (derniereMoyenne < moyenneNotes) 
+                    newTableE.style = "background-image: url('img/monte.svg'); background-size: contain; background-repeat: no-repeat; background-position: center;";
+                else
+                    newTableE.style = "background-image: url('img/descend.svg'); background-size: contain; background-repeat: no-repeat; background-position: center;";
+            }
+
+            else
+                newTableE.style = "background-image: url('img/constant.svg'); background-size: contain; background-repeat: no-repeat; background-position: center;";
+
+            console.log(derniereMoyenne);
+
             rangGen += parseFloat(matieres[i].rang) * parseFloat(matieres[i].coef);
             sommeCoeffMatiere += parseFloat(matieres[i].coef);
         } else {
@@ -119,6 +143,7 @@ function afficherMatiere(matieres, effectif, reponse, tr) {
         }
 
         newTableE.innerText = moyenneNotes;
+
         document.getElementsByTagName("tr")[i + 1].appendChild(newTableE);
     }
 
