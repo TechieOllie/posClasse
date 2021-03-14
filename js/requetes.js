@@ -4,6 +4,7 @@ function auth() {
         login = document.getElementById("login").value;
         password = document.getElementById("password").value;
     }
+    
     // On retire le tableau si besoin est
     if (document.getElementsByTagName("p")[0] != undefined) {
         document.getElementsByTagName("p")[0].remove();
@@ -65,6 +66,10 @@ function auth() {
                 var msgAfficher = document.createElement("test");
                 document.getElementsByTagName("body")[0].appendChild(msgAfficher);
             }
+
+            // Affichage de la photo de profil
+           /* var lien = reponse.data.accounts[0].profile.photo;
+            document.getElementById("photoUser").src = "https://"+lien.substr(2);*/
 
 
             // Si pas d'erreur lancement de la 2e requête

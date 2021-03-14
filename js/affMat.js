@@ -55,27 +55,28 @@ function afficherMatiere(matieres, effectif, reponse, tr) {
     disciplineTable.id = "disciplineTable";
     disciplineTable.innerText = "Matières";
 
-    var rangTable = document.createElement("th");
-    rangTable.id = "rangTable";
-    rangTable.innerText = "Position";
-
     var moyenneNoteTable = document.createElement("th");
     moyenneNoteTable.id = "moyenneNoteTable";
     moyenneNoteTable.innerText = "Notes";
+
+    var progressionNoteTable = document.createElement("th");
+    progressionNoteTable.id = "progressionNoteTable";
+    progressionNoteTable.innerText = "Progression";
 
     document.getElementsByTagName("body")[0].appendChild(table);
     table.appendChild(colonne);
 
     var column = document.getElementById("column");
     column.appendChild(disciplineTable);
-    column.appendChild(rangTable);
     column.appendChild(moyenneNoteTable);
+    column.appendChild(progressionNoteTable);
 
     // Remplissage du tableau "physique"
     var moyenneGen = 0;
     var rangGen = 0;
     var sommeCoeffMatiere = 0;
 
+    // Affichage lignes après lignes des trois colonnes
     for (i = 0; i < matieres.length; i++) {
         var newTable = document.createElement("tr");
         document.getElementById("table").appendChild(newTable);
@@ -85,28 +86,15 @@ function afficherMatiere(matieres, effectif, reponse, tr) {
         newTableD.innerText = matieres[i].discipline
         document.getElementsByTagName("tr")[i + 1].appendChild(newTableD);
 
-        // Rang
-        var newTableR = document.createElement("td");
-        newTableR.innerText = "/";
-        if (matieres[i].rang != "0") { // Si pas de rang, on met un slash
-            newTableR.innerText = matieres[i].rang;
-        }
-        
-        // Couleur en fonction du classement (necessite la variable effectif, pas toujours présente...)
-        if (matieres[i].rang == 0) {
-            newTableR.style = "";
-        } else if (matieres[i].rang <= Math.round(effectif * 1 / 3)) {
-            newTableR.style = "background-color: green;";
-        } else if (matieres[i].rang <= Math.round(effectif * 2 / 3)) {
-            newTableR.style = "background-color: yellow;";
-        } else if (matieres[i].rang <= Math.round(effectif * 3 / 3)) {
-            newTableR.style = "background-color: red;";
-        }
+        // Moyennes
+        var newTableN = document.createElement("td");
+        newTableN.innerText = "/";
 
-        document.getElementsByTagName("tr")[i + 1].appendChild(newTableR);
+        document.getElementsByTagName("tr")[i + 1].appendChild(newTableN);
 
-        // Calcul + affichage des moyennes
-        var newTableE = document.createElement("td");
+        // Affichage progression
+        var newTableP = document.createElement("td");
+        newTableP.style = "font-weight: bold; background-size: 18%; background-repeat: no-repeat; background-position: center;"
         var moyenneNotes = 0;
         var sommeCoeff = 0;
         var sommeNotes = 0;
@@ -122,29 +110,56 @@ function afficherMatiere(matieres, effectif, reponse, tr) {
             moyenneNotes = Math.round(sommeNotes / sommeCoeff * 2000) / 100;
             moyenneGen += moyenneNotes * parseFloat(matieres[i].coef);
             
+            // Comparaison de moyennes et affichage de la progression
             if (nbNotes >= 2) {
-                derniereNote = tableauDevoirs[matieres[i].discipline][nbNotes-1]
+                derniereNote = tableauDevoirs[matieres[i].discipline][nbNotes-1];
                 derniereMoyenne = Math.round((sommeNotes-derniereNote[0]/derniereNote[1]*derniereNote[2]) / (sommeCoeff-derniereNote[2]) * 2000) / 100;
-                if (derniereMoyenne < moyenneNotes) 
-                    newTableE.style = "background-image: url('img/monte.svg'); background-size: contain; background-repeat: no-repeat; background-position: center;";
-                else
-                    newTableE.style = "background-image: url('img/descend.svg'); background-size: contain; background-repeat: no-repeat; background-position: center;";
+                console.log("testavant", derniereMoyenne, moyenneNotes)
+                if (derniereMoyenne < moyenneNotes) {
+                    newTableP.style.setProperty("background-image", "url('img/monte.svg')");
+                }
+                    
+                else if (derniereMoyenne > moyenneNotes) {
+                    newTableP.style.setProperty("background-image", "url('img/descend.svg')");
+                }
+
+                else {
+                    newTableP.style.setProperty("background-image", "url('img/constant.svg')");
+                }
+            }
+            else {
+                newTableP.style.setProperty("background-image", "url('img/constant.svg')");
             }
 
-            else
-                newTableE.style = "background-image: url('img/constant.svg'); background-size: contain; background-repeat: no-repeat; background-position: center;";
+
+            // Couleurs en fonction des notes
+            if (moyenneNotes != undefined) {
+                if (moyenneNotes >= 19)
+                    newTableN.style = "color:White; background-color: Violet ;";
+                else if (moyenneNotes >= 17)
+                    newTableN.style = "color:White; background-color: DodgerBlue;";
+                else if (moyenneNotes >= 14)
+                    newTableN.style = "color:White; background-color: MediumSeaGreen;";
+                else if (moyenneNotes >= 10)
+                    newTableN.style = "color:White; background-color: DarkOrange;";
+                else
+                    newTableN.style = "color:White; background-color: Red;";
+            }
+
 
             console.log(derniereMoyenne);
 
             rangGen += parseFloat(matieres[i].rang) * parseFloat(matieres[i].coef);
             sommeCoeffMatiere += parseFloat(matieres[i].coef);
-        } else {
+        } 
+
+        else {
             moyenneNotes = "/"; // Sinon, affiche un slash
         }
 
-        newTableE.innerText = moyenneNotes;
+        newTableN.innerText = moyenneNotes;
 
-        document.getElementsByTagName("tr")[i + 1].appendChild(newTableE);
+        document.getElementsByTagName("tr")[i + 1].appendChild(newTableP);
     }
 
     // Affichage pour rang moyen, notes moyennes
@@ -156,23 +171,15 @@ function afficherMatiere(matieres, effectif, reponse, tr) {
     newTableD.innerText = "Moyennes";
     document.getElementsByTagName("tr")[i + 1].appendChild(newTableD);
 
-    var newTableR = document.createElement("td");
-    if (rangGen != 0 && sommeCoeffMatiere != 0)
-        newTableR.innerText = Math.round(rangGen / sommeCoeffMatiere);
-    else
-        newTableR.innerText = "/";
-    newTableR.style = "font-weight: bold";
-    document.getElementsByTagName("tr")[i + 1].appendChild(newTableR);
-
-    var newTableE = document.createElement("td");
+    var newTableP = document.createElement("td");
     if (moyenneGen != 0 && sommeCoeffMatiere != 0)
-        newTableE.innerText = Math.round(moyenneGen / sommeCoeffMatiere * 100) / 100;
+        newTableP.innerText = Math.round(moyenneGen / sommeCoeffMatiere * 100) / 100;
     else
-        newTableE.innerText = "/";
+        newTableP.innerText = "/";
 
 
-    newTableE.style = "font-weight: bold";
-    document.getElementsByTagName("tr")[i + 1].appendChild(newTableE);
+    newTableP.style = "font-weight: bold";
+    document.getElementsByTagName("tr")[i + 1].appendChild(newTableP);
 
     // Message mise à jour notes
     var maj = document.createElement("p");
