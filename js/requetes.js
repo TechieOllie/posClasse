@@ -39,7 +39,7 @@ function auth() {
         while (u < 3) {
             document.getElementsByTagName("no")[0].remove();
             document.getElementsByName("Trimestre")[0].remove();
-            document.getElementsByTagName("br")[3].remove();
+            document.getElementsByTagName("br")[5].remove(); // Très relatif, à changer si d'autres <br> ajouté
             u++;
         }
     }

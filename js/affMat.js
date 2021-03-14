@@ -181,6 +181,11 @@ function afficherMatiere(matieres, effectif, reponse, tr) {
     newTableP.style = "font-weight: bold";
     document.getElementsByTagName("tr")[i + 1].appendChild(newTableP);
 
+    // Légende des couleurs notes
+    var bar = document.createElement("img");
+    bar.src = "img/bar.png";
+    document.getElementsByTagName("body")[0].appendChild(bar);
+
     // Message mise à jour notes
     var maj = document.createElement("p");
     maj.style = "font-style: italic;";
@@ -193,8 +198,8 @@ function afficherMatiere(matieres, effectif, reponse, tr) {
     }
     console.log(notes);
     console.log(notes.indexOf(Math.min(...notes)))
+    
     maj.innerText = "Dernière mise a jour des notes le : " + reponse.data.notes[notes.indexOf(Math.min(...notes))].dateSaisie + ".\nDernier calcul du classement le : " + reponse.data.periodes[reponse.data.periodes.length - 1].ensembleMatieres.dateCalcul + ".";
-
     maj.style = "font-style: italic;";
     document.getElementsByTagName("body")[0].appendChild(maj);
 
