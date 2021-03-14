@@ -8,6 +8,7 @@ function auth() {
     // On retire le tableau si besoin est
     if (document.getElementsByTagName("p")[0] != undefined) {
         document.getElementsByTagName("p")[0].remove();
+        document.getElementById("bar").remove();
     }
     if (document.getElementsByTagName("table")[0] != undefined) {
         document.getElementsByTagName("table")[0].remove();

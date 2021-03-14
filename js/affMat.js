@@ -183,6 +183,7 @@ function afficherMatiere(matieres, effectif, reponse, tr) {
 
     // Légende des couleurs notes
     var bar = document.createElement("img");
+    bar.id = "bar";
     bar.src = "img/bar.png";
     document.getElementsByTagName("body")[0].appendChild(bar);
 
