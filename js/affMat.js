@@ -162,7 +162,7 @@ function afficherMatiere(matieres, effectif, reponse, tr) {
         document.getElementsByTagName("tr")[i + 1].appendChild(newTableP);
     }
 
-    // Affichage pour rang moyen, notes moyennes
+    // Affichage pour moyenne notes
     var newTable = document.createElement("tr");
     document.getElementById("table").appendChild(newTable);
 
@@ -171,14 +171,19 @@ function afficherMatiere(matieres, effectif, reponse, tr) {
     newTableD.innerText = "Moyennes";
     document.getElementsByTagName("tr")[i + 1].appendChild(newTableD);
 
-    var newTableP = document.createElement("td");
+    var newTableN = document.createElement("td");
     if (moyenneGen != 0 && sommeCoeffMatiere != 0)
-        newTableP.innerText = Math.round(moyenneGen / sommeCoeffMatiere * 100) / 100;
+        newTableN.innerText = Math.round(moyenneGen / sommeCoeffMatiere * 100) / 100;
     else
-        newTableP.innerText = "/";
+        newTableN.innerText = "/";
+    newTableN.style = "font-weight: bold";
+    document.getElementsByTagName("tr")[i + 1].appendChild(newTableN);
 
-
+    // Affichage pour progression moyenne
+    var newTableP = document.createElement("td");
+    document.getElementById("table").appendChild(newTableP);
     newTableP.style = "font-weight: bold";
+    newTableP.innerText = "/";
     document.getElementsByTagName("tr")[i + 1].appendChild(newTableP);
 
     // Légende des couleurs notes

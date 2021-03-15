@@ -69,7 +69,7 @@ function auth() {
             }
 
             // Affichage de la photo de profil
-           /* var lien = reponse.data.accounts[0].profile.photo;
+            /*var lien = reponse.data.accounts[0].profile.photo;
             document.getElementById("photoUser").src = "https://"+lien.substr(2);*/
 
 
