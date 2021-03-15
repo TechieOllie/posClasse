@@ -20,6 +20,7 @@ function afficherMatiere(matieres, effectif, reponse, tr) {
         rang.push(matieres[i].rang);
     }
 
+    console.log("trimestre", tr)
     console.log(rang);
     console.log(discipline);
 
@@ -27,11 +28,11 @@ function afficherMatiere(matieres, effectif, reponse, tr) {
     var listeDevoirs = reponse.data.notes;
     var tableauDevoirs = {}; // Contient par matière les notes, surX et le coeff pour chaque valeur
 
-    for (x of listeDevoirs) {
-        if (new Date(x.date) <= finEcheance && new Date(x.date) > debEchance && !x.nonSignificatif) { // Correpond aux echeances (si les profs remplissent au bon moment...) + significatif
-            if (tableauDevoirs[x.libelleMatiere] == undefined) {
+    for (x of listeDevoirs) { // Parcoure la liste de toute les note rentrées
+        if (tr != 2 ? (x.codePeriode == "A00"+(tr+1) && !x.nonSignificatif) : true) { // Test si bon semestre + si c'est significatif
+            if (tableauDevoirs[x.libelleMatiere] == undefined) { // Nouvelle matière
                 tableauDevoirs[x.libelleMatiere] = [];
-                if (!isNaN(parseFloat(x.valeur))) { // Verif si absent
+                if (!isNaN(parseFloat(x.valeur))) { // Verif si il y a bien une note
                     tableauDevoirs[x.libelleMatiere].push([parseFloat(x.valeur.replace(",", ".")), parseFloat(x.noteSur.replace(",", ".")), parseFloat(x.coef.replace(",", "."))]);
                 }
             } else {
@@ -100,7 +101,7 @@ function afficherMatiere(matieres, effectif, reponse, tr) {
         var sommeNotes = 0;
         var derniereMoyenne = -1;
 
-        if (tableauDevoirs[matieres[i].discipline] != undefined) {
+        if (tableauDevoirs[matieres[i].discipline] != undefined && tableauDevoirs[matieres[i].discipline].length > 0) { // Vérifie si la matière existe et si il y'a bien eu une note dans le semestre
             var nbNotes = tableauDevoirs[matieres[i].discipline].length;
             for (chaqueNote of tableauDevoirs[matieres[i].discipline]) {
                 sommeNotes += (chaqueNote[0] / chaqueNote[1]) * chaqueNote[2];
@@ -219,6 +220,7 @@ function afficherMatiere(matieres, effectif, reponse, tr) {
         document.getElementsByTagName("p")[0].remove();
         document.getElementsByTagName("table")[0].remove();
         document.getElementById("deco").remove();
+        document.getElementById("bar").remove();
 
         document.getElementById("login").disabled = false;
         document.getElementById("password").disabled = false;
