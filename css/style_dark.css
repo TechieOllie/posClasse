@@ -49,6 +49,7 @@ no {
 }
 
 div {
+	border-radius: 7px;
 	background-color: #142952;
 	border-style: solid;
 	border-color: RoyalBlue;
