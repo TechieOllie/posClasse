@@ -1,9 +1,11 @@
 7/10/20
 -Adaptation à la petit màj d'Ecole Directe
 
+
 posClasse 2.3
 -Suppression des pubs
 -Correction d'un bug d'affichage
+
 
 posClasse 2.2.2
 -Considère la fin d'un semestre comme la date du conseil
@@ -25,9 +27,15 @@ posClasse 2.1
 -Supression du snippet pour enlever la pub de l'hebergeur
 -Grisage des champs login/password
 
+
 posClasse 2.0
 -Système de semestre/trimestre
 -Date par défaut
 
+
 posClasse 3.1
 -Mode nuit
+
+
+posClasse 3.2
+-Affichage de l'écart par rapport à la moyenne (par matière et générale)

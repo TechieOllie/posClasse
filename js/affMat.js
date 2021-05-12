@@ -1,7 +1,6 @@
 // Affichage des matières
 function afficherMatiere(matieres, effectif, reponse, tr) {
     // Création des tableaux
-    rang = [];
     discipline = [];
 
     // Variable pour fin tri/semestre
@@ -17,15 +16,24 @@ function afficherMatiere(matieres, effectif, reponse, tr) {
     // Remplissage du tableau
     for (i = 0; i < matieres.length; i++) {
         discipline.push(matieres[i].discipline);
-        rang.push(matieres[i].rang);
     }
 
     console.log("trimestre", tr)
-    console.log(rang);
     console.log(discipline);
+
+    // Pour calculer ensuite l'évolution moyenneG
+    var notesTimestamp = [];
+    var dateMtn = new Date();
+
+    for (k = 0; k < reponse.data.notes.length; k++) {
+        notesTimestamp.push(dateMtn - new Date(reponse.data.notes[k].dateSaisie.split("-")));
+    }
+
+    var derniereNoteG = reponse.data.notes[notesTimestamp.indexOf(Math.min(...notesTimestamp))];
 
     // Classement des moyennes
     var listeDevoirs = reponse.data.notes;
+    var nDerniereNote = [0, listeDevoirs[0]]; // Dernière note rentrée pour calculer évolution moyenneG
     var tableauDevoirs = {}; // Contient par matière les notes, surX et le coeff pour chaque valeur
 
     for (x of listeDevoirs) { // Parcoure la liste de toute les note rentrées
@@ -74,7 +82,7 @@ function afficherMatiere(matieres, effectif, reponse, tr) {
 
     // Remplissage du tableau "physique"
     var moyenneGen = 0;
-    var rangGen = 0;
+    var ancienMoyenneG = 0;
     var sommeCoeffMatiere = 0;
 
     // Affichage lignes après lignes des trois colonnes
@@ -84,7 +92,7 @@ function afficherMatiere(matieres, effectif, reponse, tr) {
 
         // Disciplines
         var newTableD = document.createElement("td");
-        newTableD.innerText = matieres[i].discipline
+        newTableD.innerText = matieres[i].discipline;
         document.getElementsByTagName("tr")[i + 1].appendChild(newTableD);
 
         // Moyennes
@@ -95,11 +103,16 @@ function afficherMatiere(matieres, effectif, reponse, tr) {
 
         // Affichage progression
         var newTableP = document.createElement("td");
-        newTableP.style = "font-weight: bold; background-size: 18%; background-repeat: no-repeat; background-position: center;"
+        var differenceNote = document.createElement("p");
+        differenceNote.style.margin = 0;
+        differenceNote.style.fontWeight = "bold";
+        newTableP.style = "background-size: 18%; background-repeat: no-repeat; background-position: center;"
         var moyenneNotes = 0;
         var sommeCoeff = 0;
         var sommeNotes = 0;
         var derniereMoyenne = -1;
+        var derniereNote = -1;
+        var diffMoyenne = 0;
 
         if (tableauDevoirs[matieres[i].discipline] != undefined && tableauDevoirs[matieres[i].discipline].length > 0) { // Vérifie si la matière existe et si il y'a bien eu une note dans le semestre
             var nbNotes = tableauDevoirs[matieres[i].discipline].length;
@@ -110,28 +123,40 @@ function afficherMatiere(matieres, effectif, reponse, tr) {
 
             moyenneNotes = Math.round(sommeNotes / sommeCoeff * 2000) / 100;
             moyenneGen += moyenneNotes * parseFloat(matieres[i].coef);
-            
+
+            if (matieres[i].discipline == derniereNoteG.libelleMatiere) {
+            	// Ajoute à la moyenne générale le calcul de la moyenne de la matière où il y a eu la dernière note rentrée, mais sans la compter
+            	ancienMoyenneG += (Math.round((sommeNotes-(derniereNoteG.valeur / derniereNoteG.noteSur * derniereNoteG.coef)) / (sommeCoeff-derniereNoteG.coef) * 2000) / 100) * parseFloat(matieres[i].coef);
+            }
+
+            else {
+            	ancienMoyenneG += moyenneNotes * parseFloat(matieres[i].coef);
+            }
+
             // Comparaison de moyennes et affichage de la progression
             if (nbNotes >= 2) {
                 derniereNote = tableauDevoirs[matieres[i].discipline][nbNotes-1];
                 derniereMoyenne = Math.round((sommeNotes-derniereNote[0]/derniereNote[1]*derniereNote[2]) / (sommeCoeff-derniereNote[2]) * 2000) / 100;
-                console.log("testavant", derniereMoyenne, moyenneNotes)
-                if (derniereMoyenne < moyenneNotes) {
-                    newTableP.style.setProperty("background-image", "url('img/monte.svg')");
-                }
-                    
-                else if (derniereMoyenne > moyenneNotes) {
-                    newTableP.style.setProperty("background-image", "url('img/descend.svg')");
-                }
+                diffMoyenne = Math.round((moyenneNotes-derniereMoyenne)*100)/100;
+                console.log("testavant", derniereMoyenne, moyenneNotes, diffMoyenne)
+            	
+            	if (diffMoyenne > 0) {
+            		differenceNote.innerText = "+";
+            		differenceNote.style.color = "#5aa03c";
+            	}
 
-                else {
-                    newTableP.style.setProperty("background-image", "url('img/constant.svg')");
-                }
+            	else if (diffMoyenne < 0) {
+            		differenceNote.style.color = "#c1312a";
+            	}
+
+            	else {
+            		differenceNote.style.color = "#93d7ff";
+           		}
             }
+
             else {
-                newTableP.style.setProperty("background-image", "url('img/constant.svg')");
+            	differenceNote.style.color = "#93d7ff";
             }
-
 
             // Couleurs en fonction des notes
             if (moyenneNotes != undefined) {
@@ -146,21 +171,19 @@ function afficherMatiere(matieres, effectif, reponse, tr) {
                 else
                     newTableN.style = "color:White; background-color: Red;";
             }
-
-
-            console.log(derniereMoyenne);
-
-            rangGen += parseFloat(matieres[i].rang) * parseFloat(matieres[i].coef);
             sommeCoeffMatiere += parseFloat(matieres[i].coef);
         } 
 
         else {
+        	diffMoyenne = "/";
             moyenneNotes = "/"; // Sinon, affiche un slash
         }
 
         newTableN.innerText = moyenneNotes;
+        differenceNote.innerText += diffMoyenne;
 
         document.getElementsByTagName("tr")[i + 1].appendChild(newTableP);
+        document.getElementsByTagName("td")[3*i+2].appendChild(differenceNote);
     }
 
     // Affichage pour moyenne notes
@@ -173,18 +196,45 @@ function afficherMatiere(matieres, effectif, reponse, tr) {
     document.getElementsByTagName("tr")[i + 1].appendChild(newTableD);
 
     var newTableN = document.createElement("td");
-    if (moyenneGen != 0 && sommeCoeffMatiere != 0)
-        newTableN.innerText = Math.round(moyenneGen / sommeCoeffMatiere * 100) / 100;
-    else
+    var moyenneFinale;
+    if (moyenneGen != 0 && sommeCoeffMatiere != 0) {
+    	moyenneFinale = Math.round(moyenneGen / sommeCoeffMatiere * 100) / 100;
+        newTableN.innerText = moyenneFinale;
+    }
+    else {
         newTableN.innerText = "/";
+    }
     newTableN.style = "font-weight: bold";
     document.getElementsByTagName("tr")[i + 1].appendChild(newTableN);
 
+
     // Affichage pour progression moyenne
-    var newTableP = document.createElement("td");
-    document.getElementById("table").appendChild(newTableP);
-    newTableP.style = "font-weight: bold";
-    newTableP.innerText = "/";
+   	var newTableP = document.createElement("td");
+   	newTableP.style = "font-weight: bold; background-size: 18%; background-repeat: no-repeat; background-position: center;"
+
+    //document.getElementById("table").appendChild(newTableP);
+    var ancienneMoyenneFinale;
+    if (ancienMoyenneG != 0 && sommeCoeffMatiere != 0) {
+    	ancienneMoyenneFinale = Math.round(ancienMoyenneG / sommeCoeffMatiere * 100) / 100;
+		if (ancienneMoyenneFinale < moyenneFinale) {
+		   newTableP.innerText = "+";
+           newTableP.style.color = "#5aa03c";
+        }
+                    
+        else if (ancienneMoyenneFinale > moyenneFinale) {
+        	newTableP.style.color = "#c1312a";
+        }
+
+        else {
+        	newTableP.style.color = "#93d7ff";
+        }
+    }
+
+    else {
+    	newTableP.innerText = "/";
+    }
+
+    newTableP.innerText += Math.round((moyenneFinale-ancienneMoyenneFinale)* 100) / 100;
     document.getElementsByTagName("tr")[i + 1].appendChild(newTableP);
 
     // Légende des couleurs notes
@@ -197,16 +247,9 @@ function afficherMatiere(matieres, effectif, reponse, tr) {
     var maj = document.createElement("p");
     maj.style = "font-style: italic;";
 
-    var notes = [];
-    var dateMtn = new Date();
-
-    for (k = 0; k < reponse.data.notes.length; k++) {
-        notes.push(new Date() - new Date(parseInt(reponse.data.notes[k].dateSaisie.split("-")[0]), parseInt(reponse.data.notes[k].dateSaisie.split("-")[1]) - 1, parseInt(reponse.data.notes[k].dateSaisie.split("-")[2])));
-    }
-    console.log(notes);
-    console.log(notes.indexOf(Math.min(...notes)))
+    console.log(notesTimestamp); // Stocke la différence de timestamp entre le moment de la saisie et ajd pour chaque note
     
-    maj.innerText = "Dernière mise a jour des notes le : " + reponse.data.notes[notes.indexOf(Math.min(...notes))].dateSaisie + ".\nDernier calcul du classement le : " + reponse.data.periodes[reponse.data.periodes.length - 1].ensembleMatieres.dateCalcul + ".";
+    maj.innerText = "Dernière mise à jour des notes le : " + reponse.data.notes[notesTimestamp.indexOf(Math.min(...notesTimestamp))].dateSaisie+".";
     maj.style = "font-style: italic;";
     document.getElementsByTagName("body")[0].appendChild(maj);
 

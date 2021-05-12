@@ -5,19 +5,15 @@ function auth() {
         password = document.getElementById("password").value;
     }
     
-    // On retire le tableau si besoin est
-    if (document.getElementsByTagName("p")[0] != undefined) {
-        document.getElementsByTagName("p")[0].remove();
-        document.getElementById("bar").remove();
-    }
+    // On retire le tableau et les autres éléments si besoin est
     if (document.getElementsByTagName("table")[0] != undefined) {
         document.getElementsByTagName("table")[0].remove();
-    }
-    if (document.getElementById("deco") != undefined) {
+        document.getElementsByTagName("p")[document.getElementsByTagName("p").length-1].remove();
+        document.getElementById("bar").remove();
         document.getElementById("deco").remove();
     }
 
-    // Pour empêcher les singes de spammer le bouton ou les champs
+    // Pour empêcher les sauvages de spammer le bouton ou les champs
     document.getElementById("button").disabled = true;
     document.getElementById("login").disabled = true;
     document.getElementById("password").disabled = true;
