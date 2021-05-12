@@ -26,17 +26,24 @@ function afficherMatiere(matieres, effectif, reponse, tr) {
     var dateMtn = new Date();
 
     for (k = 0; k < reponse.data.notes.length; k++) {
-        notesTimestamp.push(dateMtn - new Date(reponse.data.notes[k].dateSaisie.split("-")));
+    	if (!isNaN(parseFloat(reponse.data.notes[k].valeur)) && !reponse.data.notes[k].nonSignificatif) { // Verif si y'a bien une note et pas absent
+    		notesTimestamp.push(dateMtn - new Date(reponse.data.notes[k].dateSaisie.split("-")));
+    	}
+
+    	else {
+    		notesTimestamp.push(dateMtn-0);
+    	}
     }
 
     var derniereNoteG = reponse.data.notes[notesTimestamp.indexOf(Math.min(...notesTimestamp))];
-
+    console.log(derniereNoteG);
+    
     // Classement des moyennes
     var listeDevoirs = reponse.data.notes;
     var nDerniereNote = [0, listeDevoirs[0]]; // Dernière note rentrée pour calculer évolution moyenneG
     var tableauDevoirs = {}; // Contient par matière les notes, surX et le coeff pour chaque valeur
 
-    for (x of listeDevoirs) { // Parcoure la liste de toute les note rentrées
+    for (x of listeDevoirs) { // Parcourt la liste de toute les note rentrées
         if (tr != 2 ? (x.codePeriode == "A00"+(tr+1) && !x.nonSignificatif) : true) { // Test si bon semestre + si c'est significatif
             if (tableauDevoirs[x.libelleMatiere] == undefined) { // Nouvelle matière
                 tableauDevoirs[x.libelleMatiere] = [];
@@ -126,19 +133,19 @@ function afficherMatiere(matieres, effectif, reponse, tr) {
 
             if (matieres[i].discipline == derniereNoteG.libelleMatiere) {
             	// Ajoute à la moyenne générale le calcul de la moyenne de la matière où il y a eu la dernière note rentrée, mais sans la compter
-            	ancienMoyenneG += (Math.round((sommeNotes-(derniereNoteG.valeur / derniereNoteG.noteSur * derniereNoteG.coef)) / (sommeCoeff-derniereNoteG.coef) * 2000) / 100) * parseFloat(matieres[i].coef);
+            	ancienMoyenneG += (Math.round((sommeNotes-(parseFloat(derniereNoteG.valeur.replace(",", ".")) / parseFloat(derniereNoteG.noteSur.replace(",", ".")) * parseFloat(derniereNoteG.coef.replace(",", ".")))) / (sommeCoeff-parseFloat(derniereNoteG.coef.replace(",", "."))) * 2000) / 100) * parseFloat(matieres[i].coef);
             }
 
             else {
             	ancienMoyenneG += moyenneNotes * parseFloat(matieres[i].coef);
             }
 
+
             // Comparaison de moyennes et affichage de la progression
             if (nbNotes >= 2) {
                 derniereNote = tableauDevoirs[matieres[i].discipline][nbNotes-1];
                 derniereMoyenne = Math.round((sommeNotes-derniereNote[0]/derniereNote[1]*derniereNote[2]) / (sommeCoeff-derniereNote[2]) * 2000) / 100;
                 diffMoyenne = Math.round((moyenneNotes-derniereMoyenne)*100)/100;
-                console.log("testavant", derniereMoyenne, moyenneNotes, diffMoyenne)
             	
             	if (diffMoyenne > 0) {
             		differenceNote.innerText = "+";
@@ -260,7 +267,7 @@ function afficherMatiere(matieres, effectif, reponse, tr) {
         document.getElementById("login").value = "";
         document.getElementById("password").value = "";
 
-        document.getElementsByTagName("p")[0].remove();
+        document.getElementsByTagName("p")[document.getElementsByTagName("p").length-1].remove();
         document.getElementsByTagName("table")[0].remove();
         document.getElementById("deco").remove();
         document.getElementById("bar").remove();
