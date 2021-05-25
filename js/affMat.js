@@ -18,7 +18,7 @@ function afficherMatiere(matieres, effectif, reponse, tr) {
         discipline.push(matieres[i].discipline);
     }
 
-    console.log("trimestre", tr)
+    console.log("trimestre", tr);
     console.log(discipline);
 
     // Pour calculer ensuite l'évolution moyenneG
@@ -37,7 +37,7 @@ function afficherMatiere(matieres, effectif, reponse, tr) {
     var tableauDevoirs = {}; // Contient par matière les notes, surX et le coeff pour chaque valeur
 
     for (x of listeDevoirs) { // Parcoure la liste de toute les note rentrées
-        if (tr != 2 ? (x.codePeriode == "A00"+(tr+1) && !x.nonSignificatif) : true) { // Test si bon semestre + si c'est significatif
+        if (tr != 2 ? (x.codePeriode == "A00"+(tr+1) && !x.nonSignificatif) : !x.nonSignificatif) { // Test si bon semestre + si c'est significatif
             if (tableauDevoirs[x.libelleMatiere] == undefined) { // Nouvelle matière
                 tableauDevoirs[x.libelleMatiere] = [];
                 if (!isNaN(parseFloat(x.valeur))) { // Verif si il y a bien une note
@@ -260,7 +260,7 @@ function afficherMatiere(matieres, effectif, reponse, tr) {
         document.getElementById("login").value = "";
         document.getElementById("password").value = "";
 
-        document.getElementsByTagName("p")[0].remove();
+        document.getElementsByTagName("p")[document.getElementsByTagName("p").length-1].remove();
         document.getElementsByTagName("table")[0].remove();
         document.getElementById("deco").remove();
         document.getElementById("bar").remove();
