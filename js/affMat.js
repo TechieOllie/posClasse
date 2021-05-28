@@ -36,7 +36,6 @@ function afficherMatiere(matieres, effectif, reponse, tr) {
     }
 
     var derniereNoteG = reponse.data.notes[notesTimestamp.indexOf(Math.min(...notesTimestamp))];
-    console.log(derniereNoteG);
     
     // Classement des moyennes
     var listeDevoirs = reponse.data.notes;
@@ -92,6 +91,7 @@ function afficherMatiere(matieres, effectif, reponse, tr) {
     var moyenneGen = 0;
     var ancienMoyenneG = 0;
     var sommeCoeffMatiere = 0;
+    var sommeCoeffAncien = 0;
 
     // Affichage lignes après lignes des trois colonnes
     for (i = 0; i < matieres.length; i++) {
@@ -133,14 +133,18 @@ function afficherMatiere(matieres, effectif, reponse, tr) {
             moyenneGen += moyenneNotes * parseFloat(matieres[i].coef);
 
             if (matieres[i].discipline == derniereNoteG.libelleMatiere) {
-            	// Ajoute à la moyenne générale le calcul de la moyenne de la matière où il y a eu la dernière note rentrée, mais sans la compter
-            	ancienMoyenneG += (Math.round((sommeNotes-(parseFloat(derniereNoteG.valeur.replace(",", ".")) / parseFloat(derniereNoteG.noteSur.replace(",", ".")) * parseFloat(derniereNoteG.coef.replace(",", ".")))) / (sommeCoeff-parseFloat(derniereNoteG.coef.replace(",", "."))) * 2000) / 100) * parseFloat(matieres[i].coef);
+            	if (nbNotes > 1) { // Si il y a plus d'une note de rentrée pour ne pas avoir de division par zéro
+            		// Ajoute à la moyenne générale le calcul de la moyenne de la matière où il y a eu la dernière note rentrée, mais sans la compter
+            		ancienMoyenneG += (Math.round((sommeNotes-(parseFloat(derniereNoteG.valeur.replace(",", ".")) / parseFloat(derniereNoteG.noteSur.replace(",", ".")) * parseFloat(derniereNoteG.coef.replace(",", ".")))) / (sommeCoeff-parseFloat(derniereNoteG.coef.replace(",", "."))) * 2000) / 100) * parseFloat(matieres[i].coef);
+            	}
+            	else { // Si la dernière note rentrée est dans une matière ou il n y avait pas de note
+            		sommeCoeffAncien -= matieres[i].coef;
+            	}
             }
 
             else {
             	ancienMoyenneG += moyenneNotes * parseFloat(matieres[i].coef);
             }
-
 
             // Comparaison de moyennes et affichage de la progression
             if (nbNotes >= 2) {
@@ -180,6 +184,10 @@ function afficherMatiere(matieres, effectif, reponse, tr) {
                     newTableN.style = "color:White; background-color: Red;";
             }
             sommeCoeffMatiere += parseFloat(matieres[i].coef);
+            sommeCoeffAncien += parseFloat(matieres[i].coef);
+
+            console.log(ancienMoyenneG, sommeCoeffAncien);
+            console.log(moyenneGen, sommeCoeffMatiere);
         } 
 
         else {
@@ -222,8 +230,8 @@ function afficherMatiere(matieres, effectif, reponse, tr) {
 
     //document.getElementById("table").appendChild(newTableP);
     var ancienneMoyenneFinale;
-    if (ancienMoyenneG != 0 && sommeCoeffMatiere != 0) {
-    	ancienneMoyenneFinale = Math.round(ancienMoyenneG / sommeCoeffMatiere * 100) / 100;
+    if (ancienMoyenneG != 0 && sommeCoeffAncien != 0) {
+    	ancienneMoyenneFinale = Math.round(ancienMoyenneG / sommeCoeffAncien * 100) / 100;
 		if (ancienneMoyenneFinale < moyenneFinale) {
 		   newTableP.innerText = "+";
            newTableP.style.color = "#5aa03c";
