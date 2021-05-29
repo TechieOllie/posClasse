@@ -5,20 +5,26 @@
 	<meta charset="utf-8">
 	<script>var clicky_site_ids = clicky_site_ids || []; clicky_site_ids.push(101306061);</script>
 	<script async src="//static.getclicky.com/js"></script>
- 	<link rel="stylesheet" href="css/style.css">
+ 	<script src="https://cdn.jsdelivr.net/npm/chart.js@3.2.1/dist/chart.min.js"></script>
+	<link rel="stylesheet" href="css/style.css">
  	<link rel="stylesheet" href="css/style_light.css" id="mycss">
 </head>
 <body>
-	<div>
-		<h2 id="title">Position classe (3.2)</h2>
+	<div class="title">
+		<h2 id="title">Position classe (4.1)</h2>
 		<img id="light" src="img/dark_mode.svg" style="width: 48px;" type="button" onclick="switchStyle('css/style_light.css')" />
 		<img id="dark" src="img/light_mode.svg" style="width: 48px;" type="button" onclick="switchStyle('css/style_dark.css')" />
 	</div>
-	<br><img id="photoUser" src="img/profile-default.png" style="width: 20%;" />
 	<br>
-	<input id="login" placeholder="Login" />
+	<div class="login">
+	<br><img id="photoUser" src="img/logo_ecole_directe2.jpg" style="width: 30%;" />
+	<br>
+	<input id="login" placeholder="Identifiant" />
 	<br><input id="password" type="password" placeholder="Mot de passe" />
-	<br><input id="button" type="button" value="Connexion / Actualisation" onclick="auth()" />
+	<br><button id="button" class="button button_loading" type="button" onclick="auth()" >
+			<span id="button_text">Rechercher</span>
+		</button>
+	</div>
 	<br>
 	<script src="js/affMat.js"></script>
 	<script src="js/affPeriode.js"></script>
@@ -41,6 +47,11 @@
 
 			// On se connecte
 			auth();
+		}
+		else {
+			// on enlève l'animation chargement
+			const btn = document.querySelector("#button");
+			btn.classList.remove("button_loading");
 		}
 
 		// Enregistrer les identifiants (local)

@@ -3,6 +3,9 @@ function afficherMatiere(matieres, effectif, reponse, tr) {
     // Création des tableaux
     discipline = [];
 
+    // Tableau des moyennes des notes pour le graph
+	Graph_Data = [];
+
     // Variable pour fin tri/semestre
     let finEcheance;
     if (typeof reponse.data.periodes[tr].dateConseil != "undefined") {
@@ -59,6 +62,7 @@ function afficherMatiere(matieres, effectif, reponse, tr) {
     }
 
     console.log(tableauDevoirs);
+
 
     // Création du tableau "physique"
     var table = document.createElement("table");
@@ -154,20 +158,20 @@ function afficherMatiere(matieres, effectif, reponse, tr) {
             	
             	if (diffMoyenne > 0) {
             		differenceNote.innerText = "+";
-            		differenceNote.style.color = "#5aa03c";
+            		differenceNote.style.color = "MediumSeaGreen";
             	}
 
             	else if (diffMoyenne < 0) {
-            		differenceNote.style.color = "#c1312a";
+            		differenceNote.style.color = "Red";
             	}
 
             	else {
-            		differenceNote.style.color = "#93d7ff";
+            		differenceNote.style.color = "Black";
            		}
             }
 
             else {
-            	differenceNote.style.color = "#93d7ff";
+            	differenceNote.style.color = "DodgerBlue";
             }
 
             // Couleurs en fonction des notes
@@ -185,9 +189,6 @@ function afficherMatiere(matieres, effectif, reponse, tr) {
             }
             sommeCoeffMatiere += parseFloat(matieres[i].coef);
             sommeCoeffAncien += parseFloat(matieres[i].coef);
-
-            console.log(ancienMoyenneG, sommeCoeffAncien);
-            console.log(moyenneGen, sommeCoeffMatiere);
         } 
 
         else {
@@ -200,6 +201,9 @@ function afficherMatiere(matieres, effectif, reponse, tr) {
 
         document.getElementsByTagName("tr")[i + 1].appendChild(newTableP);
         document.getElementsByTagName("td")[3*i+2].appendChild(differenceNote);
+
+      	// Remplissage de la liste du Graph
+		Graph_Data.push(moyenneNotes)
     }
 
     // Affichage pour moyenne notes
@@ -208,7 +212,7 @@ function afficherMatiere(matieres, effectif, reponse, tr) {
 
     var newTableD = document.createElement("td");
     newTableD.style = "font-weight: bold";
-    newTableD.innerText = "Moyennes";
+    newTableD.innerText = "Moyenne";
     document.getElementsByTagName("tr")[i + 1].appendChild(newTableD);
 
     var newTableN = document.createElement("td");
@@ -228,21 +232,20 @@ function afficherMatiere(matieres, effectif, reponse, tr) {
    	var newTableP = document.createElement("td");
    	newTableP.style = "font-weight: bold; background-size: 18%; background-repeat: no-repeat; background-position: center;"
 
-    //document.getElementById("table").appendChild(newTableP);
     var ancienneMoyenneFinale;
     if (ancienMoyenneG != 0 && sommeCoeffAncien != 0) {
     	ancienneMoyenneFinale = Math.round(ancienMoyenneG / sommeCoeffAncien * 100) / 100;
 		if (ancienneMoyenneFinale < moyenneFinale) {
 		   newTableP.innerText = "+";
-           newTableP.style.color = "#5aa03c";
+           newTableP.style.color = "MediumSeaGreen";
         }
                     
         else if (ancienneMoyenneFinale > moyenneFinale) {
-        	newTableP.style.color = "#c1312a";
+        	newTableP.style.color = "Red";
         }
 
         else {
-        	newTableP.style.color = "#93d7ff";
+        	newTableP.style.color = "DodgerBlue";
         }
     }
 
@@ -259,13 +262,92 @@ function afficherMatiere(matieres, effectif, reponse, tr) {
     bar.src = "img/bar.png";
     document.getElementsByTagName("body")[0].appendChild(bar);
 
+    // Graphique
+    var canvas = document.createElement("canvas");
+    canvas.id = "myChart";
+    canvas.style = "width:360px;margin:auto;text-align:center;"
+    document.body.appendChild(canvas);
+
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var data = { 
+        labels: discipline,
+        datasets: [
+            {
+                fill: true,
+                fillOpacity: .1, 
+                borderWidth: 4,
+                borderColor : "rgb(65, 105, 225,0.7)",
+                backgroundColor : "rgb(65, 105, 225,0.2)",
+                data: Graph_Data
+            }
+        
+        ]
+    }
+    var options = {
+        layout: {
+            padding: 2
+        },
+        
+        plugins: {
+            legend: {
+                display: false
+                }   
+        },
+        animations: {
+            tension: {
+                duration: 1000,
+                easing: 'easeInElastic',
+                from: 0.3,
+                to: 0.1,
+                loop: true
+            }
+        },
+        scales: {
+            r: {
+                angleLines: {
+                    color: "black"
+                },
+                grid: {
+                    circular:true,
+                    color: 'DarkGray'
+                },
+                pointLabels: {
+                    color: '#404040',
+                    font: 
+                    {
+                        size:8
+                    }
+                },
+                ticks: {
+                    showLabelBackdrop:false,
+                    color: 'RoyalBlue',
+                    font: 
+                    {
+                        size:20
+                    }
+                
+                },
+                suggestedMin: 0,
+                suggestedMax: 20
+            }
+        },
+        responsive: true,
+        legend: false
+    }
+    var myChart = new Chart(ctx, {
+        type: 'radar',
+        data: data,
+        options: options
+    });
+
     // Message mise à jour notes
     var maj = document.createElement("p");
     maj.style = "font-style: italic;";
 
     console.log(notesTimestamp); // Stocke la différence de timestamp entre le moment de la saisie et ajd pour chaque note
     
-    maj.innerText = "Dernière mise à jour des notes le : " + reponse.data.notes[notesTimestamp.indexOf(Math.min(...notesTimestamp))].dateSaisie+".";
+    var msgMaj = reponse.data.notes[notesTimestamp.indexOf(Math.min(...notesTimestamp))];
+    maj.innerText = "Dernière note rentrée en "+msgMaj.libelleMatiere+" le : " +msgMaj.dateSaisie+".";
     maj.style = "font-style: italic;";
     document.getElementsByTagName("body")[0].appendChild(maj);
 
@@ -273,6 +355,8 @@ function afficherMatiere(matieres, effectif, reponse, tr) {
         localStorage.clear();
         cookie = false;
 
+        document.getElementById("login").style.display = "inline";
+        document.getElementById("password").style.display = "inline";
         document.getElementById("login").value = "";
         document.getElementById("password").value = "";
 
@@ -280,9 +364,18 @@ function afficherMatiere(matieres, effectif, reponse, tr) {
         document.getElementsByTagName("table")[0].remove();
         document.getElementById("deco").remove();
         document.getElementById("bar").remove();
+        document.getElementById("myChart").remove();
 
-        document.getElementById("login").disabled = false;
-        document.getElementById("password").disabled = false;
+        // On enleve les cases
+        if (document.getElementsByTagName("no")[0] != undefined) {
+            u = 0;
+            while (u < 3) {
+                document.getElementsByTagName("no")[0].remove();
+                document.getElementsByName("Trimestre")[0].remove();
+                document.getElementsByTagName("br")[5].remove(); // Très relatif, à changer si d'autres <br> ajouté
+                u++;
+            }
+        }
     }
 
     var deco = document.createElement("input");
@@ -292,4 +385,7 @@ function afficherMatiere(matieres, effectif, reponse, tr) {
     deco.addEventListener("click", disconnect);
     document.getElementsByTagName("body")[0].appendChild(deco);
 
+    // on enlève l'animation chargement
+    const btn = document.querySelector("#button");
+    btn.classList.remove("button_loading");
 }

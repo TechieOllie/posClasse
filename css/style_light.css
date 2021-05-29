@@ -1,40 +1,100 @@
 body {
 	text-align: center;
-	font-family: Arial, Roboto;
-	background-color: antiquewhite;
+	font-family: 'Lato', sans-serif;
+	background-color: #ecf0f3;
 }
 
 input {
-	border-radius: 7px;
 	font-size: 20px;
-	border-width: 3px;
-	border-style: solid;
-	border-color: RoyalBlue;
-	background-color: OldLace;
-	margin: 5px;
+	border-width: 0px;
+	background-color: Gainsboro;
+	margin: 8px;
+	padding: 4px;
+	box-sizing: border-box;
 }
 
+
+
+.login {
+	border-radius: 15px;
+	position: relative;
+	background-color: #ecf0f3;
+	max-width: 280px;
+	margin: 0 auto;
+	padding: 20px;
+	box-shadow: 10px 10px 20px #cbced1, -10px -10px 20px #fff;
+	
+	
+}
+
+
+
+
+
 #button {
-	border-radius: 7px;
+	position: relative;
+	border-radius: 2px;
+	text-align: center;
+	background-color: CornflowerBlue;
+	outline: 0;
+	margin: 8px;
+	width: 90%;
+	border: 0;
+	padding: 10px;
+	cursor: pointer;
+}
+
+#button_text {
+	font-size: 20px;
+	transition: all 0.2s;
+	color: White;
+}
+
+/* Animation chargement */
+	
+.button_loading #button_text {
+	visibility: hidden;
+	opacity: 0;
+}
+
+.button_loading::after {
+	content: "";
+	position: absolute;
+	width: 16px;
+	height:16px;
+	top:0;
+	left:0;
+	right:0;
+	bottom:0;
+	margin: auto;
+	border:4px solid transparent;
+	border-top-color: White;
+	border-radius: 50%;
+	animation: button_loading_spinner 1s ease infinite;
+}
+
+@keyframes button_loading_spinner {
+	from {
+		transform: rotate(0turn);
+	}
+	to {
+		transform: rotate(1turn);
+	}
+}
+/* ******************************* */
+
+#deco {
+	border-radius: 2px;
 	text-align: center;
 	font-size: 20px;
 	color: White;
-	border-width: 3px;
-	border-style: solid;
-	border-color: RoyalBlue;
 	background-color: CornflowerBlue;
-	margin: 5px;
-}
-
-#deco {
-	border-radius: 7px;
-	font-size: 20px;
-	color: White;
-	border-width: 3px;
-	border-style: solid;
-	border-color: RoyalBlue;
-	background-color: CornflowerBlue;
-	margin: 5px;
+	outline: 0;
+	margin: 8px;
+	width: 252px ;
+	border: 0;
+	padding: 10px;
+	cursor: pointer;	
 }
 
 no {
@@ -46,17 +106,23 @@ no {
 	color: White;
 }
 
-div {
-	border-radius: 7px;
+.title {
 	background-color: CornflowerBlue;
-	border-style: solid;
-	border-color: RoyalBlue;
 	height: 54px;
+	width: 100%;
 }
 
-td, tr {
-	border: 3px solid RoyalBlue;
+td{
+	/* border-radius: 15px; */
+	border: 0px solid #ecf0f3;
 	width: 100px;
+	height: 45px;
+	text-align: center;
+}
+tr{
+	border: 0px solid #ecf0f3;
+	width: 100px;
+	height: 35px;
 	text-align: center;
 }
 
@@ -66,4 +132,28 @@ td, tr {
 
 #dark {
 	display: inline;
+}
+
+table {
+	border-radius: 15px;
+	position: relative;
+	background-color: #ecf0f3;
+	width: 350px;
+	margin: 20px auto;
+	padding: 5px;
+	box-shadow: 10px 10px 20px #cbced1, -10px -10px 20px #fff;
+	border: 30px;
+	
+}
+
+canvas {
+	border-radius: 15px;
+	position: relative;
+	background-color: #ecf0f3;
+	width: 350px;
+	margin: 20px auto;
+	padding: 5px;
+	box-shadow: 10px 10px 20px #cbced1, -10px -10px 20px #fff;
+	border: 30px;
+	
 }

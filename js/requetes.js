@@ -1,4 +1,9 @@
 function auth() {
+
+    // on applique l'animation chargement
+    const btn = document.querySelector("#button");
+    btn.classList.add("button_loading");
+
     // Récupération des identifiants si pas dans le localStorage
     if (cookie == false) {
         login = document.getElementById("login").value;
@@ -11,12 +16,13 @@ function auth() {
         document.getElementsByTagName("p")[document.getElementsByTagName("p").length-1].remove();
         document.getElementById("bar").remove();
         document.getElementById("deco").remove();
+        document.getElementById("myChart").remove();
     }
 
     // Pour empêcher les sauvages de spammer le bouton ou les champs
+    document.getElementById("login").style.display = "none";
+    document.getElementById("password").style.display = "none";
     document.getElementById("button").disabled = true;
-    document.getElementById("login").disabled = true;
-    document.getElementById("password").disabled = true;
 
     // Création de la variable pour le trimestre demandé par l'utilisateur
     if (document.getElementById("tr0")) {
@@ -30,10 +36,11 @@ function auth() {
         trUser = -1;
     }
 
-    // On retire les cases à cocher
+    // On retire les cases à cocher si elles sont la
     if (document.getElementsByTagName("no")[0] != undefined) {
         u = 0;
         while (u < 3) {
+            console.log("test");
             document.getElementsByTagName("no")[0].remove();
             document.getElementsByName("Trimestre")[0].remove();
             document.getElementsByTagName("br")[5].remove(); // Très relatif, à changer si d'autres <br> ajouté
@@ -64,11 +71,6 @@ function auth() {
                 document.getElementsByTagName("body")[0].appendChild(msgAfficher);
             }
 
-            // Affichage de la photo de profil
-            /*var lien = reponse.data.accounts[0].profile.photo;
-            document.getElementById("photoUser").src = "https://"+lien.substr(2);*/
-
-
             // Si pas d'erreur lancement de la 2e requête
             console.log(message);
             document.getElementById("button").disabled = false;
@@ -76,15 +78,14 @@ function auth() {
                 var idEleve = reponse.data.accounts[0].id;
                 recupererNote(token, idEleve);
                 enregistrer(login, password);
-                //log(login);
-                document.getElementsByTagName("test")[0].innerText = "Chargement...";
             }
 
             // Si erreur affichage du message d'erreur
             else {
                 document.getElementsByTagName("test")[0].innerText = message;
-                document.getElementById("login").disabled = false;
-                document.getElementById("password").disabled = false;
+                document.getElementById("login").style.display = "inline";
+                document.getElementById("password").style.display = "inline";
+                btn.classList.remove("button_loading");
             }
         }
     }
@@ -117,7 +118,7 @@ function recupererNote(token, idEleve) {
             console.log("tr pour req", tr);
             var matieres = reponse.data.periodes[tr].ensembleMatieres.disciplines;
             var effectif = reponse.data.periodes[0].ensembleMatieres.disciplines[0].effectif;
-            afficherPeriodes(reponse)
+            afficherPeriodes(reponse);
             afficherMatiere(matieres, effectif, reponse, tr);
         }
     }

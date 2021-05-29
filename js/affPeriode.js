@@ -12,7 +12,7 @@ function afficherPeriodes(reponse) {
         document.body.appendChild(coche);
 
         var p = document.createElement("no");
-        p.innerText = "Depuis le début de l'année";
+        p.innerText = "Toute l'année";
         document.body.appendChild(p);
 
         var retourLigne = document.createElement("br");
@@ -22,12 +22,12 @@ function afficherPeriodes(reponse) {
             var coche = document.createElement("input");
             coche.type = "radio";
             coche.id = "tr" + (i - 1);
-            coche.name = "Trimestre"
+            coche.name = "Trimestre";
 
             document.body.appendChild(coche);
 
             var p = document.createElement("no");
-            p.innerText = (i) + "e semestre";
+            p.innerText =  "Semestre n°"+(i);
             document.body.appendChild(p);
 
             var retourLigne = document.createElement("br");
@@ -40,11 +40,11 @@ function afficherPeriodes(reponse) {
         var coche = document.createElement("input");
         coche.type = "radio";
         coche.id = "tr" + (NbTr - 1);
-        coche.name = "Trimestre"
+        coche.name = "Trimestre";
         document.body.appendChild(coche);
 
         var p = document.createElement("no");
-        p.innerText = "Depuis le début de l'année";
+        p.innerText = "Toute l'année";
         document.body.appendChild(p);
 
         var retourLigne = document.createElement("br");
@@ -54,11 +54,11 @@ function afficherPeriodes(reponse) {
             var coche = document.createElement("input");
             coche.type = "radio";
             coche.id = "tr" + (i - 1);
-            coche.name = "Trimestre"
+            coche.name = "Trimestre";
             document.body.appendChild(coche);
 
             var p = document.createElement("no");
-            p.innerText = (i) + "e trimestre";
+            p.innerText = "Trimestre "+(i);
             document.body.appendChild(p);
 
             var retourLigne = document.createElement("br");
@@ -67,7 +67,7 @@ function afficherPeriodes(reponse) {
     }
 
     // Cochage de la case adéquate
-    document.getElementById("tr" + tr).checked = true;
+    document.getElementById("tr"+tr).checked = true;
 
-    console.log("Periodes affichées!")
+    console.log("Periodes affichées !");
 }
