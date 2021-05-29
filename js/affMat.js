@@ -1,5 +1,8 @@
 // Affichage des matières
 function afficherMatiere(matieres, effectif, reponse, tr) {
+    // On autorise la plèbe à rappuyer sur les boutons
+    document.getElementById("button").disabled = false;
+
     // Création des tableaux
     discipline = [];
 

@@ -1,5 +1,10 @@
 function auth() {
 
+    // Pour empêcher les sauvages de spammer le bouton ou les champs
+    document.getElementById("login").style.display = "none";
+    document.getElementById("password").style.display = "none";
+    document.getElementById("button").disabled = true;
+
     // on applique l'animation chargement
     const btn = document.querySelector("#button");
     btn.classList.add("button_loading");
@@ -18,11 +23,6 @@ function auth() {
         document.getElementById("deco").remove();
         document.getElementById("myChart").remove();
     }
-
-    // Pour empêcher les sauvages de spammer le bouton ou les champs
-    document.getElementById("login").style.display = "none";
-    document.getElementById("password").style.display = "none";
-    document.getElementById("button").disabled = true;
 
     // Création de la variable pour le trimestre demandé par l'utilisateur
     if (document.getElementById("tr0")) {
@@ -73,7 +73,6 @@ function auth() {
 
             // Si pas d'erreur lancement de la 2e requête
             console.log(message);
-            document.getElementById("button").disabled = false;
             if (message == "") {
                 var idEleve = reponse.data.accounts[0].id;
                 recupererNote(token, idEleve);
@@ -85,6 +84,7 @@ function auth() {
                 document.getElementsByTagName("test")[0].innerText = message;
                 document.getElementById("login").style.display = "inline";
                 document.getElementById("password").style.display = "inline";
+                document.getElementById("button").disabled = false;
                 btn.classList.remove("button_loading");
             }
         }
