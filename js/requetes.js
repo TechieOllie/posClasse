@@ -39,11 +39,12 @@ function auth() {
     // On retire les cases à cocher si elles sont la
     if (document.getElementsByTagName("no")[0] != undefined) {
         u = 0;
-        while (u < 3) {
+        let nbCases = document.getElementsByTagName("no").length;
+        while (u < nbCases) {
             console.log("test");
             document.getElementsByTagName("no")[0].remove();
             document.getElementsByName("Trimestre")[0].remove();
-            document.getElementsByTagName("br")[5].remove(); // Très relatif, à changer si d'autres <br> ajouté
+            document.getElementsByTagName("br")[5].remove(); // Très relatif, à changer si d'autres <br> sont ajoutés au code
             u++;
         }
     }
