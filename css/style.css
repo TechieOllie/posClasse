@@ -33,39 +33,27 @@ h2 {
 	padding-left: 7px;
 }
 
-#tr2:checked {
+#tr0:checked, #tr1:checked, #tr2:checked, #tr3:checked  {
 	background-color: Black;
 }
 
-#tr1:checked {
-	background-color: Black;
-}
-
-#tr0:checked {
-	background-color: Black;
-}
-
-#tr2:link {
+#tr0:visited, #tr1:visited, #tr2:visited, #tr3:visited, #tr0:link, #tr1:link, #tr2:link, #tr3:link  {
 	text-decoration: none;
 }
 
-#tr2:visited {
-	text-decoration: none;
-}
-
-#tr2:hover {
+#tr0:hover, #tr1:hover, #tr2:hover, #tr3:hover {
 	background-color: RoyalBlue;
 	color: White;
 	text-decoration: underline;
 }
 
-#tr2:active {
+#tr0:active, #tr1:hover, #tr2:hover, #tr3:hover {
 	background-color: Black;
 	color: black;
 	outline: 1px solid black;
 }
 
-#tr2 {
+#tr0, #tr1, #tr2, #tr3 {
 	-webkit-appearance: none;
 	-moz-appearance: none;
 	appearance: none;
@@ -78,139 +66,30 @@ h2 {
 	top: 6px;
 }
 
-#tr1:link {
-	text-decoration: none;
-}
-
-#tr1:visited {
-	text-decoration: none;
-}
-
-#tr1:hover {
-	background-color: RoyalBlue;
-	color: White;
-	text-decoration: underline;
-}
-
-#tr1:active {
-	background-color: Black;
-	color: black;
-	outline: 1px solid black;
-}
-
-#tr0:active {
-	background-color: Black;
-	color: black;
-	outline: 1px solid black;
-}
-
-#tr1 {
-	-webkit-appearance: none;
-	-moz-appearance: none;
-	appearance: none;
-	border-radius: 35%;
-	width: 16px;
-	height: 16px;
-	border: 2px solid #999;
-	transition: 0.1s all linear;
-	position: relative;
-	top: 6px;
-}
-
-#tr0:link {
-	text-decoration: none;
-}
-
-#tr0:visited {
-	text-decoration: none;
-}
-
-#tr0:hover {
-	background-color: RoyalBlue;
-	color: White;
-	text-decoration: underline;
-}
-
-#tr0 {
-	-webkit-appearance: none;
-	-moz-appearance: none;
-	appearance: none;
-	border-radius: 35%;
-	width: 16px;
-	height: 16px;
-	border: 2px solid #999;
-	transition: 0.1s all linear;
-	position: relative;
-	top: 6px;
-}
 #button:hover {
 	cursor: pointer;
 }	
 
-#button:active {
+#button:active, #deco:active, input:active, input:hover {
 	text-decoration: underline;
 }
 
-#deco:link {
+#deco:link, #deco:visited, input:link, input:visited, #button:link, #button:visited {
 	text-decoration: none;
 }
 
-#deco:visited {
-	text-decoration: none;
-}
-
-#deco:hover {
+#deco:hover, #button:hover {
 	background-color: RoyalBlue;
 	color: White;
 	text-decoration: underline;
 	cursor: pointer;
 }
 
-#deco:active {
-	text-decoration: underline;
-}
-
 #button:active {
 	background-color: RoyalBlue;
 }
 
-#button:link {
-	text-decoration: none;
-}
-
-#button:visited {
-	text-decoration: none;
-}
-
-#button:hover {
-	background-color: RoyalBlue;
-	color: White;
-	text-decoration: underline;
-}
-
-
-input:active {
-	text-decoration: underline;
-}
-
-input:link {
-	text-decoration: none;
-}
-
-input:visited {
-	text-decoration: none;
-}
-
-input:hover {
-	text-decoration: underline;
-}
-
-
-#login {
-	cursor:text;
-}
-
-#password {
+#login, #password {
 	cursor:text;
 }
 

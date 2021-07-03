@@ -47,10 +47,13 @@ function afficherMatiere(matieres, effectif, reponse, tr) {
     var listeDevoirs = reponse.data.notes;
     var nDerniereNote = [0, listeDevoirs[0]]; // Dernière note rentrée pour calculer évolution moyenneG
     var tableauDevoirs = {}; // Contient par matière les notes, surX et le coeff pour chaque valeur
+    var NbTr = reponse.data.periodes.length;
 
+    console.log(listeDevoirs);
+    console.log(NbTr);
 
     for (x of listeDevoirs) { // Parcoure la liste de toute les note rentrées
-        if (tr != 2 ? (x.codePeriode == "A00"+(tr+1) && !x.nonSignificatif) : !x.nonSignificatif) { // Test si bon semestre + si c'est significatif
+        if (tr != (NbTr-1) ? (x.codePeriode == "A00"+(tr+1) && !x.nonSignificatif) : !x.nonSignificatif) { // Test si bon semestre + si c'est significatif
             if (tableauDevoirs[x.libelleMatiere] == undefined) { // Nouvelle matière
                 tableauDevoirs[x.libelleMatiere] = [];
                 if (!isNaN(parseFloat(x.valeur))) { // Verif si il y a bien une note
