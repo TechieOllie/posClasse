@@ -41,7 +41,6 @@ function auth() {
         u = 0;
         let nbCases = document.getElementsByTagName("no").length;
         while (u < nbCases) {
-            console.log("test");
             document.getElementsByTagName("no")[0].remove();
             document.getElementsByName("Trimestre")[0].remove();
             document.getElementsByTagName("br")[5].remove(); // Très relatif, à changer si d'autres <br> sont ajoutés au code

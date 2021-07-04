@@ -375,10 +375,11 @@ function afficherMatiere(matieres, effectif, reponse, tr) {
         // On enleve les cases
         if (document.getElementsByTagName("no")[0] != undefined) {
             u = 0;
-            while (u < 3) {
+            let nbCases = document.getElementsByTagName("no").length;
+            while (u < nbCases) {
                 document.getElementsByTagName("no")[0].remove();
                 document.getElementsByName("Trimestre")[0].remove();
-                document.getElementsByTagName("br")[5].remove(); // Très relatif, à changer si d'autres <br> ajouté
+                document.getElementsByTagName("br")[5].remove(); // Très relatif, à changer si d'autres <br> sont ajoutés au code
                 u++;
             }
         }
