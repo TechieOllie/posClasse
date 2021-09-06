@@ -259,7 +259,9 @@ function afficherMatiere(matieres, effectif, reponse, tr) {
     	newTableP.innerText = "/";
     }
 
-    newTableP.innerText += Math.round((moyenneFinale-ancienneMoyenneFinale)* 100) / 100;
+    if (moyenneFinale != undefined && ancienneMoyenneFinale != undefined){
+        newTableP.innerText += Math.round((moyenneFinale-ancienneMoyenneFinale)*100)/100;
+    }
     document.getElementsByTagName("tr")[i + 1].appendChild(newTableP);
 
     // Légende des couleurs notes
@@ -352,8 +354,14 @@ function afficherMatiere(matieres, effectif, reponse, tr) {
 
     console.log(notesTimestamp); // Stocke la différence de timestamp entre le moment de la saisie et ajd pour chaque note
     
+
     var msgMaj = reponse.data.notes[notesTimestamp.indexOf(Math.min(...notesTimestamp))];
-    maj.innerText = "Dernière note rentrée en "+msgMaj.libelleMatiere+" le : " +msgMaj.dateSaisie+".";
+    if (reponse.data.notes > 0) {
+        maj.innerText = "Dernière note rentrée en "+msgMaj.libelleMatiere+" le : " +msgMaj.dateSaisie+".";
+    }
+    else {
+        maj.innerText = "Aucune note n'a été rentrée."
+    }
     maj.style = "font-style: italic;";
     document.getElementsByTagName("body")[0].appendChild(maj);
 
