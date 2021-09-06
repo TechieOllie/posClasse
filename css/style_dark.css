@@ -161,3 +161,7 @@ canvas {
 	border: 30px;
 	color: #bfbfbf;
 }
+
+test { /* Oui, la balise test n'existe pas... */
+	color: white;
+}
