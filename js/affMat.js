@@ -356,7 +356,7 @@ function afficherMatiere(matieres, effectif, reponse, tr) {
     
 
     var msgMaj = reponse.data.notes[notesTimestamp.indexOf(Math.min(...notesTimestamp))];
-    if (reponse.data.notes > 0) {
+    if (reponse.data.notes.length > 0) {
         maj.innerText = "Dernière note rentrée en "+msgMaj.libelleMatiere+" le : " +msgMaj.dateSaisie+".";
     }
     else {
