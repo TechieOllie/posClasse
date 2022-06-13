@@ -4,5 +4,5 @@ Fonctionne avec un compte EcoleDirecte.
 ## Caractéristiques
 -Calcul automatique de la moyenne dans chaque matière et moyenne générale  
 -Évolution de la moyenne lorsqu'une nouvelle note est rentrée  
--Affichage au choix par semestre/trimestre ou à l'année entière
+-Affichage au choix par semestre/trimestre ou à l'année entière  
 -Mode sombre pour une meilleure lisibilité  
